@@ -1,16 +1,14 @@
 
-The number above represents the amount of time you have been 'focused' on this page.
-The timer stops if you move to other browser tabs or minimize the browser.  You
-can use this number to more accurately determine how long a user is actually using
-your web page.  Try it out!  Notice that the timer only increments if you are 
-on this tab and the browser is not minimized.
+TimeMe.js is a library that accurately tracks how long users are accessing a web page.
+When a user first accesses your page, TimeMe.js starts tracking how longer they use the page.
+TimeMe.js stops tracking time spent if the user minimizes the browser or 
+switches to a different tab.  This means you are being reported a more accurate
+reflection of actual 'interaction' time by your user with your webpage.
 
 Additionally - TimeMe allows you to set 'idle' times outs.  If the user goes 
 idle (no page mouse movement, no page keyboard input) for a customizable period of time,
-then the timer will automatically stop.  This allows you to disregard the time
+then the TimeMe.js will automatically stop tracking time.  This allows you to disregard time
 where a user may no longer be at his or her computer but still has your page open.
-This page is currently set to a 30 second idle time out.  If  you don't press any keys
-or move your mouse over the browser for 30 seconds, the timer will stop.
 
 Furthermore - TimeMe tracks time usage across multiple pages.  This is particularly 
 useful when running a single page web application. You can get a list of all aggregate 

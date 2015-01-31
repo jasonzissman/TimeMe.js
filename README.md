@@ -25,9 +25,9 @@ Simply include the following lines of code in your page's head element: <br/><br
 <div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
 &lt;script src="TimeMe.js"&gt;&lt;/script"&gt;
 &lt;script type="text/javascript""&gt;
-TimeMe.setIdleDurationInSeconds(30);
-TimeMe.setCurrentPageName("my-home-page");
-TimeMe.initialize();		
+	TimeMe.setIdleDurationInSeconds(30);
+	TimeMe.setCurrentPageName("my-home-page");
+	TimeMe.initialize();		
 &lt;/script"&gt;</code></pre>
 </div><br/>
 This code both imports the TimeMe.js library and initializes it.  Notice that
@@ -50,11 +50,11 @@ Notice below that we use a synchronous request (not the usual asynchronous reque
 the request to our server arrives before the page closes:<br/><br/>
 <div class="code-block">
 <pre><code>window.onbeforeunload = function (event) {
-xmlhttp=new XMLHttpRequest();
-xmlhttp.open("POST","ENTER_URL_HERE",false);
-xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
-xmlhttp.send(timeSpentOnPage);
+	xmlhttp=new XMLHttpRequest();
+	xmlhttp.open("POST","ENTER_URL_HERE",false);
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
+	xmlhttp.send(timeSpentOnPage);
 };</code></pre>
 </div><br/>
 Using 'onbeforeunload' is by no means a requirement.  You can hook into any other event

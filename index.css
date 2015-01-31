@@ -1,0 +1,29 @@
+.checkTimeDivClass {
+	cursor: pointer; 
+	background-color: #555555; 
+	color: white; 
+	padding: 20px; 
+	width: 400px;
+	font-size: large;
+	text-align: center;
+}
+body {
+	color: #111111;
+	font-family: calibri;
+	margin-left:auto;
+	margin-right:auto;
+	width: 80%;
+	margin-top: 50px;
+	font-size: large;
+}
+.top-level-message{
+	text-align: center;
+}
+.time-message{
+	text-align: center;
+}
+.code-block {
+	background-color: #f3f3f3;
+	border: 2px solid #e8e8e8;
+	padding-left: 10px;
+}

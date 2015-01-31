@@ -1,2 +1,154 @@
-# TimeMe.js
-A JavaScript library to accurately time how long a user views a web page
+
+The number above represents the amount of time you have been 'focused' on this page.
+The timer stops if you move to other browser tabs or minimize the browser.  You
+can use this number to more accurately determine how long a user is actually using
+your web page.  Try it out!  Notice that the timer only increments if you are 
+on this tab and the browser is not minimized.
+
+Additionally - TimeMe allows you to set 'idle' times outs.  If the user goes 
+idle (no page mouse movement, no page keyboard input) for a customizable period of time,
+then the timer will automatically stop.  This allows you to disregard the time
+where a user may no longer be at his or her computer but still has your page open.
+This page is currently set to a 30 second idle time out.  If  you don't press any keys
+or move your mouse over the browser for 30 seconds, the timer will stop.
+
+Furthermore - TimeMe tracks time usage across multiple pages.  This is particularly 
+useful when running a single page web application. You can get a list of all aggregate 
+times spent on all pages from TimeMe.js.
+
+<h3>Where do I get TimeMe.js?</h3>
+You can download the most recent copy at <a href="SOMETHING">the TimeMe Github project</a>.
+Notice you will also need a copy of <a href="https://github.com/serkanyersen/ifvisible.js">
+Serkanyersen's ifvisible.js project</a>. The ifvisible.js library is REQUIRED to allow
+TimeMe.js to work.
+
+<h3>How do I use TimeMe.js?</h3>
+Simply include the following lines of code in your page's head element: <br/><br/>
+<div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
+&lt;script src="TimeMe.js"&gt;&lt;/script"&gt;
+&lt;script type="text/javascript""&gt;
+TimeMe.setIdleDurationInSeconds(30);
+TimeMe.setCurrentPageName("my-home-page");
+TimeMe.initialize();		
+&lt;/script"&gt;</code></pre>
+</div><br/>
+This code both imports the TimeMe.js library and initializes it.  Notice that
+this code sets the idle duration to 30 seconds, which means 30 seconds of user
+inactivity (no mouse or keyboard usage on the page) will stop the timer.  Also,
+we define a page name (my-home-page) to associate with the current timer.
+<br/><br/>
+Once imported and initialized, we can call the various methods made available
+by TimeMe.js.  See the <a href="#API">API documentation</a> below for
+a complete breakdown of all of the available functionality.  The most basic
+feature is to retrieve the time spent by the user on the current page:<br/><br/>
+<div class="code-block">
+	<pre><code>var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();</code></pre>
+</div><br/>
+In most cases you will want to store the time spent on a page for analytic purposes.  You will
+therefore need to send the time spent on a page to the server at some point!  When is
+the best time to do this?  You can hook into the window.onbeforeunload event to do so.
+In most browsers this method is fired during a page's shut-down routine.
+Notice below that we use a synchronous request (not the usual asynchronous request) to guarantee
+the request to our server arrives before the page closes:<br/><br/>
+<div class="code-block">
+<pre><code>window.onbeforeunload = function (event) {
+xmlhttp=new XMLHttpRequest();
+xmlhttp.open("POST","ENTER_URL_HERE",false);
+xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
+xmlhttp.send(timeSpentOnPage);
+};</code></pre>
+</div><br/>
+Using 'onbeforeunload' is by no means a requirement.  You can hook into any other event
+or logical point in your application to send the time spent information to the server.
+<br/><br/>
+In a traditional web design where one static page is served for each request
+made by the client, any call to getTimeOnCurrentPageInSeconds() will be
+unique and valid for each page that imports and initializes TimeMe.js. Alternatively,
+if using a Single Page Application (SPA) design, TimeMe.js can have its timer stopped,
+page name switched, and the timer resumed (for the new page) with the following calls:<br/><br/>
+<div class="code-block">
+<pre><code>TimeMe.stopTimer();
+// ... Now might be a good time to upload the time spent on the page to your server!
+// ... load up new page
+TimeMe.setCurrentPageName("new-page-name");
+TimeMe.startTimer();</code></pre>
+</div><br/>
+All page times are tracked in TimeMe.js, so you can review total aggregate time
+spent on each page for a particular user's session:<br/><br/>
+<div class="code-block">
+<pre><code>var timeSpentReport = TimeMe.getTimeOnAllPagesInSeconds();</code></pre>
+</div><br/>
+This call will return an array of objects of page names and the corresponding aggregate
+time spent on that page.
+</div>		
+<div>
+<h3>What browsers are supported?</h3>
+Chrome, Firefox, Safari, and IE 8+.
+</div>		
+<div>
+<h3>Anyone to give credit to?</h3>
+TimeMe.js uses ifvisible.js.  Take a look at 
+<a href="https://github.com/serkanyersen/ifvisible.js">serkanyersen's Github account</a> 
+if interested in just using the 'ifvisible' component of TimeMe that lets you know when a 
+user is actively viewing your page! 
+</div>		
+<div>
+<a name="API"></a>
+<h3>API</h3>	
+<div class="code-block">
+<pre><code>TimeMe.setCurrentPageName(newPageName);</code></pre>
+Sets the page name to be associated with any future calls to timer. 
+<br/><br/>
+</div><br/>			
+<div class="code-block">
+<pre><code>TimeMe.setIdleDurationInSeconds(durationInSeconds);</code></pre>
+Sets the time (in seconds) that a user is idle before the timer is
+turned off.
+<br/><br/>
+</div><br/>		
+<div class="code-block">
+<pre><code>TimeMe.initialize();</code></pre>
+Initializes the timer.  Should only be called when first importing the
+library and beginning to time page usage.
+<br/><br/>
+</div><br/>				
+<div class="code-block">
+<pre><code>var timeInSeconds = TimeMe.getTimeOnCurrentPageInSeconds();</code></pre>
+Retrieves the time spent (in seconds) on the current page.
+<br/><br/>
+</div><br/>
+<div class="code-block">
+<pre><code>var timeInSeconds = TimeMe.getTimeOnPageInSeconds(pageName);</code></pre>
+Retrieves the time spent (in seconds) on the indicated page.
+<br/><br/>
+</div><br/>	
+<div class="code-block">
+<pre><code>var timeSpentInfo = TimeMe.getTimeOnAllPagesInSeconds();</code></pre>
+Retrieves the time spent on all pages that have been recorded using TimeMe.js.
+Notice this only works for Single Page Applications (SPAs) where TimeMe.js is
+only initialized once.
+<br/><br/>
+</div><br/>	
+<div class="code-block">
+<pre><code>TimeMe.startTimer();</code></pre>
+Manually starts the timer for the current page.  Notice this only works if the
+timer is currently stopped.
+<br/><br/>
+</div><br/>	
+<div class="code-block">
+<pre><code>TimeMe.stopTimer();</code></pre>
+Manually stops the timer.  Notice this only works if the timer is currently running.
+<br/><br/>
+</div><br/>
+<div class="code-block">
+<pre><code>TimeMe.clearRecordedPageTime(pageName);</code></pre>
+Clears the recorded time for the indicated page name.
+<br/><br/>
+</div><br/>	
+<div class="code-block">
+<pre><code>TimeMe.clearAllRecordedPageTimes();</code></pre>
+Clears all recorded times for all pages.
+<br/><br/>
+</div><br/>				
+</div>		

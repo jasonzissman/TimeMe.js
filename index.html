@@ -5,7 +5,7 @@
 		<link rel="stylesheet" type="text/css" href="index.css">
 		<script src="TimeMe.js"></script>
 		<script type="text/javascript">
-			TimeMe.setIdleDurationInSeconds(30);
+			TimeMe.setIdleDurationInSeconds(15);
 			TimeMe.setCurrentPageName("my-home-page");
 			TimeMe.initialize();
 			window.onload = function(){
@@ -14,11 +14,6 @@
 					document.getElementById('timeInSeconds').textContent = timeSpentOnPage;
 				}, 25);
 			}
-			window.onbeforeunload = function (event) {
-				xmlhttp=new XMLHttpRequest();
-				xmlhttp.open("GET","www.google.com",false);
-				xmlhttp.send(null);
-			};
 		</script>
 	</head>
 	<body>
@@ -32,6 +27,16 @@
 			</h1>
 		</div>
 		<div>
+			<h3>Demo</h3>
+			Notice the timer above?  It is tracking how long you are actively viewing this web page.
+			It is smart enough to stop incrementing when you minimize the browser or if you switch to
+			a different tab.  Try it out!  It also stops incrementing if you go idle for more than 15
+			seconds (meaning you don't move the mouse or enter the keyboard for 15 seconds).  While 15
+			seconds is a relatively short time to gauge inactivity, it can be increased to a more
+			realistic value (such as 60 seconds) to determine that a user is no longer viewing the page
+			and has left the browser or computer altogether.
+		</div>
+		<div>
 			TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
 			TimeMe.js disregards time spent on a web page if the user minimizes the browser or 
 			switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
@@ -41,10 +46,6 @@
 			where a web page is open but the user isn't actually interacting with it (such as when
 			they temporarily leave the computer).  These components put together create a much more accurate
 			representation of how long users are actually using a web page.
-			<br/><br/>
-			Furthermore - TimeMe tracks time usage across multiple pages.  This is particularly 
-			useful when running a single page web application. You can get a list of all aggregate 
-			times spent on all pages from TimeMe.js.
 			<br/><br/>
 			Furthermore - TimeMe tracks time usage across multiple pages.  This is particularly 
 			useful when running a single page web application. You can get a list of all aggregate 

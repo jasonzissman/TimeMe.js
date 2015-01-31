@@ -1,6 +1,6 @@
 
 TimeMe.js is a library that accurately tracks how long users are accessing a web page.
-When a user first accesses your page, TimeMe.js starts tracking how longer they use the page.
+When a user first accesses your page, TimeMe.js starts tracking how long they use the page.
 TimeMe.js stops tracking time spent if the user minimizes the browser or 
 switches to a different tab.  This means you are being reported a more accurate
 reflection of actual 'interaction' time by your user with your webpage.
@@ -18,7 +18,7 @@ times spent on all pages from TimeMe.js.
 You can download the most recent copy at <a href="SOMETHING">the TimeMe Github project</a>.
 Notice you will also need a copy of <a href="https://github.com/serkanyersen/ifvisible.js">
 Serkanyersen's ifvisible.js project</a>. The ifvisible.js library is REQUIRED to allow
-TimeMe.js to work.
+TimeMe.js to work.  A copy of ifvisible.js is bundled with this GitHub repo.
 
 <h3>How do I use TimeMe.js?</h3>
 Simply include the following lines of code in your page's head element: <br/><br/>

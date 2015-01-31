@@ -1,21 +1,24 @@
-
-TimeMe.js is a library that accurately tracks how long users are accessing a web page.
-When a user first accesses your page, TimeMe.js starts tracking how long they use the page.
-TimeMe.js stops tracking time spent if the user minimizes the browser or 
-switches to a different tab.  This means you are being reported a more accurate
-reflection of actual 'interaction' time by your user with your webpage.
-
-Additionally - TimeMe allows you to set 'idle' times outs.  If the user goes 
+<h3>What is TimeMe.js?</h3>
+TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
+TimeMe.js disregards time spent on a web page if the user minimizes the browser or 
+switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
+a user is being collected.  Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
 idle (no page mouse movement, no page keyboard input) for a customizable period of time,
-then the TimeMe.js will automatically stop tracking time.  This allows you to disregard time
-where a user may no longer be at his or her computer but still has your page open.
+then the TimeMe.js will automatically ignore this time.  This means no time will not reported
+where a web page is open but the user isn't actually interacting with it (such as when
+they temporarily leave the computer).  These components put together create a much more accurate
+representation of how long users are actually using a web page.
 
 Furthermore - TimeMe tracks time usage across multiple pages.  This is particularly 
 useful when running a single page web application. You can get a list of all aggregate 
 times spent on all pages from TimeMe.js.
 
+<h3>Demo</h3>
+You can see a demo of a timer using TimeMe.js 
+<a href="http://jasonzissman.com/timeme/index.html">here</a>.
+
 <h3>Where do I get TimeMe.js?</h3>
-You can download the most recent copy at <a href="SOMETHING">the TimeMe Github project</a>.
+You can download the most recent copy at <a href="https://github.com/jasonzissman/TimeMe.js">the TimeMe Github project</a>.
 Notice you will also need a copy of <a href="https://github.com/serkanyersen/ifvisible.js">
 Serkanyersen's ifvisible.js project</a>. The ifvisible.js library is REQUIRED to allow
 TimeMe.js to work.  A copy of ifvisible.js is bundled with this GitHub repo.

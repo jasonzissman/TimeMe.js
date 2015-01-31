@@ -32,18 +32,19 @@
 			</h1>
 		</div>
 		<div>
-			The number above represents the amount of time you have been 'focused' on this page.
-			The timer stops if you move to other browser tabs or minimize the browser.  You
-			can use this number to more accurately determine how long a user is actually using
-			your web page.  Try it out!  Notice that the timer only increments if you are 
-			on this tab and the browser is not minimized.
-			<br/><br/>
-			Additionally - TimeMe allows you to set 'idle' times outs.  If the user goes 
+			TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
+			TimeMe.js disregards time spent on a web page if the user minimizes the browser or 
+			switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
+			a user is being collected.  Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
 			idle (no page mouse movement, no page keyboard input) for a customizable period of time,
-			then the timer will automatically stop.  This allows you to disregard the time
-			where a user may no longer be at his or her computer but still has your page open.
-			This page is currently set to a 30 second idle time out.  If  you don't press any keys
-			or move your mouse over the browser for 30 seconds, the timer will stop.
+			then the TimeMe.js will automatically ignore this time.  This means no time will not reported
+			where a web page is open but the user isn't actually interacting with it (such as when
+			they temporarily leave the computer).  These components put together create a much more accurate
+			representation of how long users are actually using a web page.
+			<br/><br/>
+			Furthermore - TimeMe tracks time usage across multiple pages.  This is particularly 
+			useful when running a single page web application. You can get a list of all aggregate 
+			times spent on all pages from TimeMe.js.
 			<br/><br/>
 			Furthermore - TimeMe tracks time usage across multiple pages.  This is particularly 
 			useful when running a single page web application. You can get a list of all aggregate 
@@ -51,7 +52,7 @@
 		</div>
 		<div>
 			<h3>Where do I get TimeMe.js?</h3>
-			You can download the most recent copy at <a href="SOMETHING">the TimeMe Github project</a>.
+			You can download the most recent copy at <a href="https://github.com/jasonzissman/TimeMe.js">the TimeMe Github project</a>.
 			Notice you will also need a copy of <a href="https://github.com/serkanyersen/ifvisible.js">
 			Serkanyersen's ifvisible.js project</a>. The ifvisible.js library is REQUIRED to allow
 			TimeMe.js to work.

@@ -20,7 +20,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* 
 	Notice!  This project requires ifvisible.js to run.  You can get a copy from
 	the ifinvisible.js github (https://github.com/serkanyersen/ifvisible.js) or 
-	an old copy from www.jasonzissman.com/ifinvisible.js.
+	an old copy from www.jasonzissman.com/ifvisible.js.
 */
 
 (function() {

@@ -20,7 +20,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* 
 	Notice!  This project requires ifvisible.js to run.  You can get a copy from
 	the ifinvisible.js github (https://github.com/serkanyersen/ifvisible.js) or 
-	an old copy from www.jasonzissman.com/ifvisible.js.
+	an old copy from this github repo.
 */
 
 (function() {
@@ -35,7 +35,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.startStopTimes[pageName] = [];
 			} else {
 				var arrayOfTimes = TimeMe.startStopTimes[pageName];
-				if (arrayOfTimes[arrayOfTimes.length -1].stopTime == undefined) {
+				var latestStartStopEntry = arrayOfTimes[arrayOfTimes.length -1];
+				if (latestStartStopEntry != undefined && latestStartStopEntry.stopTime == undefined) {
 					// Can't start new timer until previous finishes.
 					return;
 				}
@@ -49,7 +50,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		stopTimer: function() {
 			var pageName = TimeMe.currentPageName;
 			var arrayOfTimes = TimeMe.startStopTimes[pageName];
-			if (arrayOfTimes == undefined){
+			if (arrayOfTimes == undefined || arrayOfTimes.length == 0){
 				// Can't stop timer before you've started it.
 				return;
 			}

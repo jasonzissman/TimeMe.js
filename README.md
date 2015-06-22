@@ -148,7 +148,7 @@ Clears the recorded time for the indicated page name.
 <br/><br/>
 </div><br/>	
 <div class="code-block">
-<pre><code>TimeMe.clearAllRecordedPageTimes();</code></pre>
+<pre><code>TimeMe.resetAllRecordedPageTimes();</code></pre>
 Clears all recorded times for all pages.
 <br/><br/>
 </div><br/>				

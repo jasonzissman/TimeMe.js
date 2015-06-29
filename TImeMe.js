@@ -31,12 +31,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		
 		startTimer: function() {
 			var pageName = TimeMe.currentPageName;
-			if (TimeMe.startStopTimes[pageName] == undefined){
+			if (TimeMe.startStopTimes[pageName] === undefined){
 				TimeMe.startStopTimes[pageName] = [];
 			} else {
 				var arrayOfTimes = TimeMe.startStopTimes[pageName];
 				var latestStartStopEntry = arrayOfTimes[arrayOfTimes.length -1];
-				if (latestStartStopEntry != undefined && latestStartStopEntry.stopTime == undefined) {
+				if (latestStartStopEntry !== undefined && latestStartStopEntry.stopTime === undefined) {
 					// Can't start new timer until previous finishes.
 					return;
 				}
@@ -50,11 +50,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		stopTimer: function() {
 			var pageName = TimeMe.currentPageName;
 			var arrayOfTimes = TimeMe.startStopTimes[pageName];
-			if (arrayOfTimes == undefined || arrayOfTimes.length == 0){
+			if (arrayOfTimes === undefined || arrayOfTimes.length === 0){
 				// Can't stop timer before you've started it.
 				return;
 			}
-			if (arrayOfTimes[arrayOfTimes.length -1].stopTime == undefined) {
+			if (arrayOfTimes[arrayOfTimes.length -1].stopTime === undefined) {
 				arrayOfTimes[arrayOfTimes.length -1].stopTime = new Date();				
 			}
 		},
@@ -65,7 +65,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		
 		getTimeOnPageInSeconds: function(pageName) {
 			var arrayOfTimes = TimeMe.startStopTimes[pageName];
-			if (arrayOfTimes == undefined){
+			if (arrayOfTimes === undefined){
 				// Can't get time on page before you've started the timer.
 				return;
 			}
@@ -74,7 +74,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			for(var i=0; i < arrayOfTimes.length; i++) {
 				var startTime = arrayOfTimes[i].startTime;
 				var stopTime = arrayOfTimes[i].stopTime;
-				if (stopTime == undefined){
+				if (stopTime === undefined){
 					stopTime = new Date();
 				}
 				var difference = stopTime - startTime;
@@ -98,8 +98,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			return allTimes;
 		},
 		
-		setIdleDurationInSeconds: function(seconds) {
-			ifvisible.setIdleDuration(seconds);
+		setIdleDurationInSeconds: function(duration) {
+			var durationFloat = parseFloat(duration);
+			if (isNaN(durationFloat) === false){
+				ifvisible.setIdleDuration(durationFloat);
+			} else {
+				throw {
+					name: "InvalidDurationException",
+					message: "An invalid duration time (" + duration + ") was provided."
+				};
+			}
 		},
 		
 		setCurrentPageName: function(pageName) {

@@ -4,7 +4,7 @@ TimeMe.js disregards time spent on a web page if the user minimizes the browser 
 switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
 a user is being collected.  Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
 idle (no page mouse movement, no page keyboard input) for a customizable period of time,
-then the TimeMe.js will automatically ignore this time.  This means no time will be reported
+then TimeMe.js will automatically ignore this time.  This means no time will be reported
 where a web page is open but the user isn't actually interacting with it (such as when
 they temporarily leave the computer).  These components put together create a much more accurate
 representation of how long users are actually using a web page.

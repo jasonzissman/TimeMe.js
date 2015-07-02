@@ -143,7 +143,7 @@ Manually stops the timer.  Notice this only works if the timer is currently runn
 <br/><br/>
 </div><br/>
 <div class="code-block">
-<pre><code>TimeMe.clearRecordedPageTime(pageName);</code></pre>
+<pre><code>TimeMe.resetRecordedPageTime(pageName);</code></pre>
 Clears the recorded time for the indicated page name.
 <br/><br/>
 </div><br/>	

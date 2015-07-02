@@ -64,6 +64,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		},
 		
 		getTimeOnPageInSeconds: function(pageName) {
+
+			var totalTimeOnPage = 0;
+
 			var arrayOfTimes = TimeMe.startStopTimes[pageName];
 			if (arrayOfTimes === undefined){
 				// Can't get time on page before you've started the timer.
@@ -80,8 +83,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				var difference = stopTime - startTime;
 				timeSpentOnPageInSeconds += (difference / 1000);
 			}
-			
-			return timeSpentOnPageInSeconds.toFixed(2);
+
+			totalTimeOnPage = Number(timeSpentOnPageInSeconds);
+			return totalTimeOnPage;
 		},
 		
 		getTimeOnAllPagesInSeconds: function() {

@@ -3,7 +3,7 @@
 		<title>Page Visibility Test</title>
 		<script src="ifvisible.js"></script>
 		<link rel="stylesheet" type="text/css" href="index.css">
-		<script src="TimeMe.js"></script>
+		<script src="timeme.js"></script>
 		<script type="text/javascript">
 			TimeMe.setIdleDurationInSeconds(15);
 			TimeMe.setCurrentPageName("my-home-page");
@@ -11,7 +11,7 @@
 			window.onload = function(){
 				setInterval(function(){
 					var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
-					document.getElementById('timeInSeconds').textContent = timeSpentOnPage;
+					document.getElementById('timeInSeconds').textContent = timeSpentOnPage.toFixed(2);
 				}, 25);
 			}
 		</script>
@@ -63,7 +63,7 @@
 			<h3>How do I use TimeMe.js?</h3>
 			Simply include the following lines of code in your page's head element: <br/><br/>
 			<div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
-&lt;script src="TimeMe.js"&gt;&lt;/script"&gt;
+&lt;script src="timeme.js"&gt;&lt;/script"&gt;
 &lt;script type="text/javascript""&gt;
 	TimeMe.setIdleDurationInSeconds(30);
 	TimeMe.setCurrentPageName("my-home-page");

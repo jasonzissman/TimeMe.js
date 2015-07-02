@@ -1,0 +1,45 @@
+{
+  "name": "ifvisible.js",
+  "version": "1.0.4",
+  "description": "Crossbrowser & lightweight way to check if user is looking at the page or interacting with it. (wrapper around HTML5 visibility api)",
+  "main": "src/ifvisible.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node tests/tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/serkanyersen/ifvisible.js.git"
+  },
+  "keywords": [
+    "visibility",
+    "HTML5",
+    "cross",
+    "browser",
+    "api",
+    "UI",
+    "idle",
+    "status",
+    "mousemove",
+    "reading",
+    "mode",
+    "tab",
+    "change"
+  ],
+  "author": "Serkan Yersen <serkanyersen@gmail.com> (http://serkan.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/serkanyersen/ifvisible.js/issues"
+  },
+  "homepage": "https://github.com/serkanyersen/ifvisible.js",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-coffee": "^0.13.0",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-docco": "^0.3.3"
+  }
+}

@@ -18,17 +18,16 @@ You can see a demo of a timer using TimeMe.js
 <a href="http://jasonzissman.com/timeme/index.html">here</a>.
 
 <h3>Where do I get TimeMe.js?</h3>
-You can download the most recent copy at <a href="https://github.com/jasonzissman/TimeMe.js">the TimeMe Github project</a>.
+You can use Bower to install TimeMe (see next steps) and its dependencies.
+Alternatively, you can download the most recent copy at <a href="https://github.com/jasonzissman/TimeMe.js">the TimeMe Github project</a>.
 Notice you will also need a copy of <a href="https://github.com/serkanyersen/ifvisible.js">
 Serkanyersen's ifvisible.js project</a>. The ifvisible.js library is REQUIRED to allow
-TimeMe.js to work.  A copy of ifvisible.js is bundled with this GitHub repo.
+TimeMe.js to work.
 
 <h3>How do I use TimeMe.js?</h3>
 
 First, obtain a copy of timeme.js and ifvisible.js.  You can get both by installing TimeMe.js via Bower: <br/><br/>
-<div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
-bower install timeme.js
-</div><br/>
+<div class="code-block"><pre><code>bower install timeme.js</div><br/><br/>
 Then, simply include the following lines of code in your page's head element: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
 &lt;script src="timeme.js"&gt;&lt;/script"&gt;

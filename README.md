@@ -24,9 +24,14 @@ Serkanyersen's ifvisible.js project</a>. The ifvisible.js library is REQUIRED to
 TimeMe.js to work.  A copy of ifvisible.js is bundled with this GitHub repo.
 
 <h3>How do I use TimeMe.js?</h3>
-Simply include the following lines of code in your page's head element: <br/><br/>
+
+First, obtain a copy of timeme.js and ifvisible.js.  You can get both by installing TimeMe.js via Bower: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
-&lt;script src="TimeMe.js"&gt;&lt;/script"&gt;
+bower install timeme.js
+</div><br/>
+Then, simply include the following lines of code in your page's head element: <br/><br/>
+<div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
+&lt;script src="timeme.js"&gt;&lt;/script"&gt;
 &lt;script type="text/javascript""&gt;
 	TimeMe.setIdleDurationInSeconds(30);
 	TimeMe.setCurrentPageName("my-home-page");

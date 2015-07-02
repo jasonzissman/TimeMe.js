@@ -27,7 +27,7 @@ TimeMe.js to work.
 <h3>How do I use TimeMe.js?</h3>
 
 First, obtain a copy of timeme.js and ifvisible.js.  You can get both by installing TimeMe.js via Bower: <br/><br/>
-<div class="code-block"><pre><code>bower install timeme.js</div><br/><br/>
+<div class="code-block"><pre><code>bower install timeme.js<pre><code></div><br/><br/>
 Then, simply include the following lines of code in your page's head element: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
 &lt;script src="timeme.js"&gt;&lt;/script"&gt;

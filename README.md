@@ -109,7 +109,7 @@ Sets the page name to be associated with any future calls to timer.
 <div class="code-block">
 <pre><code>TimeMe.setIdleDurationInSeconds(durationInSeconds);</code></pre>
 Sets the time (in seconds) that a user is idle before the timer is
-turned off.
+turned off.  Set this value to -1 to disable idle time outs.
 <br/><br/>
 </div><br/>		
 <div class="code-block">

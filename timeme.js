@@ -27,7 +27,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	TimeMe = {
 		startStopTimes: {},
 		
-		idleTimeout: 30,
+		idleTimeout: 60,
 		
 		currentPageName: "default-page-name",
 		

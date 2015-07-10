@@ -20,12 +20,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* 
 	Notice!  This project requires ifvisible.js to run.  You can get a copy from
 	the ifinvisible.js github (https://github.com/serkanyersen/ifvisible.js) or 
-	an old copy from this github repo.
+	by running "bower install timeme.js", which will install both TimeMe.js and ifvisible.js.
 */
 
 (function() {
 	TimeMe = {
 		startStopTimes: {},
+		
+		idleTimeout: 30,
 		
 		currentPageName: "default-page-name",
 		
@@ -106,6 +108,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			var durationFloat = parseFloat(duration);
 			if (isNaN(durationFloat) === false){
 				ifvisible.setIdleDuration(durationFloat);
+				TimeMe.idleTimeout = durationFloat;
 			} else {
 				throw {
 					name: "InvalidDurationException",
@@ -142,12 +145,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		TimeMe.startTimer();
 	});
 
-	ifvisible.on("idle", function(){		
-		TimeMe.stopTimer();
+	ifvisible.on("idle", function(){
+		if (TimeMe.idleTimeout > 0){
+			TimeMe.stopTimer();
+		}
 	});
 
-	ifvisible.on("wakeup", function(){		
-		TimeMe.startTimer();
+	ifvisible.on("wakeup", function(){
+		if (TimeMe.idleTimeout > 0){	
+			TimeMe.startTimer();
+		}
 	});		
 	
 	if (typeof define === "function" && define.amd) {

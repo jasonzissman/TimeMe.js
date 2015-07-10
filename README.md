@@ -15,7 +15,7 @@ times spent on all pages from TimeMe.js.
 
 <h3>Demo</h3>
 You can see a demo of a timer using TimeMe.js 
-<a href="http://jasonzissman.com/timeme/index.html">here</a>.
+<a target="_blank" href="http://jasonzissman.com/timeme/index.html">here</a>.
 
 <h3>Where do I get TimeMe.js?</h3>
 You can use Bower to install TimeMe (see next steps) and its dependencies.

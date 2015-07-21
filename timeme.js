@@ -24,6 +24,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 (function() {
+
+	if (typeof ifvisible !== 'object') {
+		console.log("Required dependency (ifvisible.js) not found.  Make sure it has been included.");
+		throw {
+			name: "MissingDependencyException",
+			message: "Required dependency (ifvisible.js) not found.  Make sure it has been included."
+		};
+	};
+
 	TimeMe = {
 		startStopTimes: {},
 		

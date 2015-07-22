@@ -23,15 +23,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	by running "bower install timeme.js", which will install both TimeMe.js and ifvisible.js.
 */
 
-(function() {
-
-	if (typeof ifvisible !== 'object') {
-		console.log("Required dependency (ifvisible.js) not found.  Make sure it has been included.");
-		throw {
-			name: "MissingDependencyException",
-			message: "Required dependency (ifvisible.js) not found.  Make sure it has been included."
-		};
-	};
+(function(ifvisible) {
 
 	TimeMe = {
 		startStopTimes: {},
@@ -39,6 +31,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		idleTimeout: 60,
 		
 		currentPageName: "default-page-name",
+		
+		getIfVisibleHandle: function(){
+			if (typeof ifvisible === 'object') {
+				return ifvisible;
+			} else {
+				if (typeof console !== "undefined") {
+					console.log("Required dependency (ifvisible.js) not found.  Make sure it has been included.");
+				}
+				throw {
+					name: "MissingDependencyException",
+					message: "Required dependency (ifvisible.js) not found.  Make sure it has been included."
+				};			
+			}
+		},
 		
 		startTimer: function() {
 			var pageName = TimeMe.currentPageName;
@@ -116,7 +122,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		setIdleDurationInSeconds: function(duration) {
 			var durationFloat = parseFloat(duration);
 			if (isNaN(durationFloat) === false){
-				ifvisible.setIdleDuration(durationFloat);
+				TimeMe.getIfVisibleHandle().setIdleDuration(durationFloat);
 				TimeMe.idleTimeout = durationFloat;
 			} else {
 				throw {
@@ -131,7 +137,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		},
 				
 		resetRecordedPageTime: function(pageName) {
-			TimeMe.startStopTimes[pageName] = [];
+			delete TimeMe.startStopTimes[pageName];
 		},
 		
 		resetAllRecordedPageTimes: function() {
@@ -141,31 +147,34 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			}
 		},
 		
+		listenForVisibilityEvents: function(){
+			TimeMe.getIfVisibleHandle().on("blur", function(){
+				TimeMe.stopTimer();
+			});
+
+			TimeMe.getIfVisibleHandle().on("focus", function(){
+				TimeMe.startTimer();
+			});
+
+			TimeMe.getIfVisibleHandle().on("idle", function(){		
+				if (TimeMe.idleTimeout > 0){
+					TimeMe.stopTimer();
+				}
+			});
+
+			TimeMe.getIfVisibleHandle().on("wakeup", function(){		
+				if (TimeMe.idleTimeout > 0){
+					TimeMe.startTimer();
+				}
+			});							
+		},
+		
 		initialize: function (){
+			TimeMe.listenForVisibilityEvents();
 			TimeMe.startTimer();
 		}
-	},
-	
-	ifvisible.on("blur", function(){
-		TimeMe.stopTimer();
-	});
-
-	ifvisible.on("focus", function(){
-		TimeMe.startTimer();
-	});
-
-	ifvisible.on("idle", function(){		
-		if (TimeMe.idleTimeout > 0){
-			TimeMe.stopTimer();
-		}
-	});
-
-	ifvisible.on("wakeup", function(){		
-		if (TimeMe.idleTimeout > 0){
-			TimeMe.startTimer();
-		}
-	});		
-	
+	};
+		
 	if (typeof define === "function" && define.amd) {
 		define(function() {
 			return TimeMe;
@@ -173,4 +182,4 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	} else {
 		window.TimeMe = TimeMe;
 	}
-})();
+})(this.ifvisible);

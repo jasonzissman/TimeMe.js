@@ -36,7 +36,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			if (typeof ifvisible === 'object') {
 				return ifvisible;
 			} else {
-				console.log("Required dependency (ifvisible.js) not found.  Make sure it has been included.");
+				if (typeof console !== "undefined") {
+					console.log("Required dependency (ifvisible.js) not found.  Make sure it has been included.");
+				}
 				throw {
 					name: "MissingDependencyException",
 					message: "Required dependency (ifvisible.js) not found.  Make sure it has been included."

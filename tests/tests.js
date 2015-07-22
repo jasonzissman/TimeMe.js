@@ -62,3 +62,21 @@ QUnit.test("resetAllRecordedPageTimes() should clear out all times.", function( 
 	var expectedNumberOfEntries = 0;
 	assert.equal(actualTimes.length, expectedNumberOfEntries, "Should have no entries since we cleared them out." );
 });
+
+QUnit.test("startTimer() is ignored the second time when called twice without stopping.", function( assert ) {
+	TimeMe.startTimer();
+	TimeMe.startTimer();
+	TimeMe.stopTimer();
+	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped." );
+	assert.ok(actualTime >= 0, "Should be greater than or equals to 0." );
+});
+
+QUnit.test("stopTimer() is ignored the second time when called twice without stopping.", function( assert ) {
+	TimeMe.startTimer();
+	TimeMe.stopTimer();
+	TimeMe.stopTimer();
+	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped." );
+	assert.ok(actualTime >= 0, "Should be greater than or equals to 0." );
+});

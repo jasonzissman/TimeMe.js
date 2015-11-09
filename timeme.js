@@ -30,7 +30,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			return module.exports = factory(require('ifvisible.js'));
 		} else if (typeof define === 'function' && define.amd) {
 			// AMD
-			define(['ifvisible.js'], function (ifvisible) {
+			define(['ifvisible'], function (ifvisible) {
 				return (root.TimeMe = factory(ifvisible));
 			});
 		} else {

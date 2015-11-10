@@ -25,7 +25,7 @@ QUnit.test("startTimer() and stopTimer() keeps track of time spent.", function( 
 	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped." );
 	assert.notOk(isNaN(actualTime), "Should be a number.");	
-	assert.ok(actualTime >= 0, "Should be greater than or equals to 0." );
+	assert.ok(actualTime >= 0, "Should be greater than or equal to 0." );
 });
 
 QUnit.test("startTimer() and stopTimer() keeps track of time spent on specific pages.", function( assert ) {
@@ -69,7 +69,7 @@ QUnit.test("startTimer() is ignored the second time when called twice without st
 	TimeMe.stopTimer();
 	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped." );
-	assert.ok(actualTime >= 0, "Should be greater than or equals to 0." );
+	assert.ok(actualTime >= 0, "Should be greater than or equal to 0." );
 });
 
 QUnit.test("stopTimer() is ignored the second time when called twice without stopping.", function( assert ) {
@@ -78,5 +78,13 @@ QUnit.test("stopTimer() is ignored the second time when called twice without sto
 	TimeMe.stopTimer();
 	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped." );
-	assert.ok(actualTime >= 0, "Should be greater than or equals to 0." );
+	assert.ok(actualTime >= 0, "Should be greater than or equal to 0." );
+});
+
+QUnit.test("initialize() should start timer", function( assert ) {
+	TimeMe.initialize();
+	TimeMe.stopTimer();
+	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped." );
+	assert.ok(actualTime >= 0, "Should be greater than or equal to 0." );
 });

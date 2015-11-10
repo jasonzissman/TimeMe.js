@@ -90,7 +90,13 @@ time spent on that page.
 <div>
 <h3>What browsers are supported?</h3>
 Chrome, Firefox, Safari, and IE 8+.
-</div>		
+</div>
+<div>
+<h3>How do I run the unit tests?</h3>		
+You'll need to install QUnit, which should be packaged with TimeMe.js if you
+performed a Bower install of TimeMe.js.  Once you have installed QUnit, you can simply
+open the test files to execute the tests.
+</div>
 <div>
 <h3>Anyone to give credit to?</h3>
 TimeMe.js uses ifvisible.js.  Take a look at 

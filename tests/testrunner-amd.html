@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TimeMe.js QUnit Tests</title>
+  <link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script type="text/javascript" src="../bower_components/qunit/qunit/qunit.js"></script>
+  <script type="text/javascript" src="../bower_components/requirejs/require.js"></script>
+  <script type="text/javascript">
+    require.config({
+      baseUrl: '../',
+      paths: {
+        'ifvisible': 'bower_components/ifvisible.js/src/ifvisible',
+        'TimeMe': 'timeme'
+      }
+    });
+    require(['TimeMe'], function(TimeMe) {
+      QUnit.test("Require TimeMe", function( assert ) {
+        assert.ok(TimeMe !== undefined, "TimeMe should be defined." );
+      });
+    })
+  </script>
+</body>
+</html>

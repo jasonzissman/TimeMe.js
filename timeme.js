@@ -75,11 +75,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					"startTime": new Date(),
 					"stopTime": undefined
 				});
-				
-				// If you're not currently visible, stop the timer that you just started.
-				if (TimeMe.getIfVisibleHandle().now() == false) {
-					TimeMe.stopTimer();
-				}
 			},
 
 			stopTimer: function () {

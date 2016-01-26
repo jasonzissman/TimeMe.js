@@ -31,11 +31,11 @@ First, obtain a copy of timeme.js and ifvisible.js.  You can get both by install
 Then, simply include the following lines of code in your page's head element: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
 &lt;script src="timeme.js"&gt;&lt;/script"&gt;
-&lt;script type="text/javascript""&gt;
+&lt;script type="text/javascript"&gt;
 	TimeMe.setIdleDurationInSeconds(30);
 	TimeMe.setCurrentPageName("my-home-page");
 	TimeMe.initialize();		
-&lt;/script"&gt;</code></pre>
+&lt;/script&gt;</code></pre>
 </div><br/>
 This code both imports the TimeMe.js library and initializes it.  Notice that
 this code sets the idle duration to 30 seconds, which means 30 seconds of user

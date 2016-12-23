@@ -30,7 +30,7 @@ First, obtain a copy of timeme.js and ifvisible.js.  You can get both by install
 <div class="code-block"><pre><code>bower install timeme.js</pre></code></div><br/><br/>
 Then, simply include the following lines of code in your page's head element: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="ifvisible.js"&gt;&lt;/script&gt;
-&lt;script src="timeme.js"&gt;&lt;/script"&gt;
+&lt;script src="timeme.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
 	TimeMe.setIdleDurationInSeconds(30);
 	TimeMe.setCurrentPageName("my-home-page");

@@ -22,9 +22,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 	the ifvisible.js github (https://github.com/serkanyersen/ifvisible.js) or
 	by running "bower install timeme.js", which will install both TimeMe.js and ifvisible.js.
 */
-
-(function() {
-	(function(root, factory) {
+(function () {
+	(function (root, factory) {
 		if (typeof module !== 'undefined' && module.exports) {
 			// CommonJS
 			return module.exports = factory(require('ifvisible.js'));
@@ -37,13 +36,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			// Global Variables
 			return root.TimeMe = factory(root.ifvisible);
 		}
-	})(this, function(ifvisible) {
+	})(this, function (ifvisible) {
 		var TimeMe = {
 			startStopTimes: {},
 
 			idleTimeout: 60,
 
-			currentPageName: "default-page-name",
+			TimerID: "default",
 
 			getIfVisibleHandle: function () {
 				if (typeof ifvisible === 'object') {
@@ -59,45 +58,61 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 
-			startTimer: function () {
-				var pageName = TimeMe.currentPageName;
-				if (TimeMe.startStopTimes[pageName] === undefined) {
-					TimeMe.startStopTimes[pageName] = [];
+			startTimer: function (a) {
+				if (typeof a == "undefined") {
+					var TimerID = TimeMe.TimerID;
 				} else {
-					var arrayOfTimes = TimeMe.startStopTimes[pageName];
+					var TimerID = a;
+				}
+				if (TimeMe.startStopTimes[TimerID] === undefined) {
+					TimeMe.startStopTimes[TimerID] = [];
+					console.log("Timer(" + TimerID + ") has started.");
+
+				} else {
+					var arrayOfTimes = TimeMe.startStopTimes[TimerID];
 					var latestStartStopEntry = arrayOfTimes[arrayOfTimes.length - 1];
 					if (latestStartStopEntry !== undefined && latestStartStopEntry.stopTime === undefined) {
 						// Can't start new timer until previous finishes.
-						return;
+						console.log("Can't start new timer(" + TimerID + ") until previous finishes.");
 					}
 				}
-				TimeMe.startStopTimes[pageName].push({
+				TimeMe.startStopTimes[TimerID].push({
 					"startTime": new Date(),
 					"stopTime": undefined
 				});
 			},
 
-			stopTimer: function () {
-				var pageName = TimeMe.currentPageName;
-				var arrayOfTimes = TimeMe.startStopTimes[pageName];
+			stopTimer: function (a) {
+				if (typeof a == "undefined") {
+					var TimerID = TimeMe.TimerID;
+				} else {
+					var TimerID = a.toString();
+				}
+				var arrayOfTimes = TimeMe.startStopTimes[TimerID];
 				if (arrayOfTimes === undefined || arrayOfTimes.length === 0) {
 					// Can't stop timer before you've started it.
-					return;
+					console.log("Can't stop timer(" + TimerID + ") before you've started it.");
 				}
 				if (arrayOfTimes[arrayOfTimes.length - 1].stopTime === undefined) {
 					arrayOfTimes[arrayOfTimes.length - 1].stopTime = new Date();
+					console.log("Timer(" + TimerID + ") has stopped.");
 				}
 			},
-
-			getTimeOnCurrentPageInSeconds: function () {
-				return TimeMe.getTimeOnPageInSeconds(TimeMe.currentPageName);
+			// Get default time;
+			getDefaultTimer: function () {
+				var TimerID = TimeMe.TimerID;
+				return TimeMe.getTimer(TimeMe.TimerID);
 			},
 
-			getTimeOnPageInSeconds: function (pageName) {
-
+			getTimer: function (a) {
+				if (typeof a == "undefined") {
+					var TimerID = TimeMe.TimerID;
+				} else {
+					var TimerID = a;
+				}
 				var totalTimeOnPage = 0;
 
-				var arrayOfTimes = TimeMe.startStopTimes[pageName];
+				var arrayOfTimes = TimeMe.startStopTimes[TimerID];
 				if (arrayOfTimes === undefined) {
 					// Can't get time on page before you've started the timer.
 					return;
@@ -117,15 +132,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				totalTimeOnPage = Number(timeSpentOnPageInSeconds);
 				return totalTimeOnPage;
 			},
-
-			getTimeOnAllPagesInSeconds: function () {
+			getAll: function () {
 				var allTimes = [];
-				var pageNames = Object.keys(TimeMe.startStopTimes);
-				for (var i = 0; i < pageNames.length; i++) {
-					var pageName = pageNames[i];
-					var timeOnPage = TimeMe.getTimeOnPageInSeconds(pageName);
+				var TimerIDs = Object.keys(TimeMe.startStopTimes);
+				for (var i = 0; i < TimerIDs.length; i++) {
+					var TimerID = TimerIDs[i];
+					var timeOnPage = TimeMe.getTimer(TimerID);
 					allTimes.push({
-						"pageName": pageName,
+						"TimerID": TimerID,
 						"timeOnPage": timeOnPage
 					});
 				}
@@ -145,46 +159,61 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 
-			setCurrentPageName: function (pageName) {
-				TimeMe.currentPageName = pageName;
+			resetRecordedTimer: function (a) {
+				if (typeof a == "undefined") {
+					var TimerID = TimeMe.TimerID;
+				} else {
+					var TimerID = a;
+				}
+				delete TimeMe.startStopTimes[TimerID];
+				TimeMe.startTimer(TimerID);
 			},
-
-			resetRecordedPageTime: function (pageName) {
-				delete TimeMe.startStopTimes[pageName];
-			},
-
-			resetAllRecordedPageTimes: function () {
-				var pageNames = Object.keys(TimeMe.startStopTimes);
-				for (var i = 0; i < pageNames.length; i++) {
-					TimeMe.resetRecordedPageTime(pageNames[i]);
+			resetAllRecordedTimers: function () {
+				var TimerIDs = Object.keys(TimeMe.startStopTimes);
+				for (var i = 0; i < TimerIDs.length; i++) {
+					TimeMe.resetRecordedTimer(TimerIDs[i]);
+					TimeMe.startTimer(TimerIDs[i]);
 				}
 			},
-
-			listenForVisibilityEvents: function () {
+			setDefaultID: function (a) {
+				TimeMe.TimerID = a;
+			},
+			listenForVisibilityEvents: function (a) {
+				if (typeof a == "undefined") {
+					var TimerID = TimeMe.TimerID;
+				} else {
+					var TimerID = a;
+				}
 				TimeMe.getIfVisibleHandle().on("blur", function () {
-					TimeMe.stopTimer();
+					TimeMe.stopTimer(TimerID);
 				});
 
 				TimeMe.getIfVisibleHandle().on("focus", function () {
-					TimeMe.startTimer();
+					TimeMe.startTimer(TimerID);
 				});
 
 				TimeMe.getIfVisibleHandle().on("idle", function () {
 					if (TimeMe.idleTimeout > 0) {
-						TimeMe.stopTimer();
+						TimeMe.stopTimer(TimerID);
 					}
 				});
 
 				TimeMe.getIfVisibleHandle().on("wakeup", function () {
 					if (TimeMe.idleTimeout > 0) {
-						TimeMe.startTimer();
+						TimeMe.startTimer(TimerID);
 					}
 				});
 			},
 
-			initialize: function () {
-				TimeMe.listenForVisibilityEvents();
-				TimeMe.startTimer();
+			initialize: function (a) {
+				if (typeof a == "undefined") {
+					var TimerID = TimeMe.TimerID;
+				} else {
+					var TimerID = a;
+				}
+
+				TimeMe.listenForVisibilityEvents(TimerID);
+				TimeMe.startTimer(TimerID);
 			}
 		};
 		return TimeMe;

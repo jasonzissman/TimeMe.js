@@ -130,7 +130,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			setIdleDurationInSeconds: function (duration) {
 				var durationFloat = parseFloat(duration);
 				if (isNaN(durationFloat) === false) {
-					TimeMe.idleTimeoutMs = TimeMe.idleTimeout * 1000;
+					TimeMe.idleTimeoutMs = duration * 1000;
 				} else {
 					throw {
 						name: "InvalidDurationException",
@@ -198,6 +198,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					}
 				}, false);
 
+				window.addEventListener('blur', function() {
+					TimeMe.stopTimer();
+				});
+
+				window.addEventListener('focus', function() {
+					TimeMe.startTimer();
+				});				
+
 				document.addEventListener("mousemove", function () { TimeMe.resetIdleCountdown(); });
 				document.addEventListener("keyup", function () { TimeMe.resetIdleCountdown(); });
 				document.addEventListener("touchstart", function () { TimeMe.resetIdleCountdown(); });
@@ -262,7 +270,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (options) {
 					idleTimeoutInSeconds = options.idleTimeoutInSeconds || 30;
 					currentPageName = options.currentPageName || "default-page-name";
-					websocktOptions = options.enableWebsocketReporting;
+					websocktOptions = options.websocktOptions;
 				}
 
 				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds);

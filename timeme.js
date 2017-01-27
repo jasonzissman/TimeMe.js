@@ -1,4 +1,4 @@
-/*Copyright (c) 2015 Jason Zissman
+/*Copyright (c) 2017 Jason Zissman
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -17,50 +17,35 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* 
-	Notice!  This project requires ifvisible.js to run.  You can get a copy from
-	the ifvisible.js github (https://github.com/serkanyersen/ifvisible.js) or
-	by running "bower install timeme.js", which will install both TimeMe.js and ifvisible.js.
-*/
+// TODO!!! Create helper function that simply calls down this code
+// instead of telling users to put it in their code up front.
 
-(function() {
-	(function(root, factory) {
+(function () {
+	(function (root, factory) {
 		if (typeof module !== 'undefined' && module.exports) {
 			// CommonJS
-			return module.exports = factory(require('ifvisible.js'));
+			return module.exports = factory();
 		} else if (typeof define === 'function' && define.amd) {
 			// AMD
-			define(['ifvisible'], function (ifvisible) {
-				return (root.TimeMe = factory(ifvisible));
+			define([], function () {
+				return (root.TimeMe = factory());
 			});
 		} else {
 			// Global Variables
-			return root.TimeMe = factory(root.ifvisible);
+			return root.TimeMe = factory();
 		}
-	})(this, function(ifvisible) {
+	})(this, function () {
 		var TimeMe = {
 			startStopTimes: {},
-
-			idleTimeout: 60,
-
+			idleTimeoutMs: 60 * 1000,
+			currentIdleTimeMs: 0,
+			checkIdleRateMs: 500,
+			idle: false,
 			currentPageName: "default-page-name",
-
-			getIfVisibleHandle: function () {
-				if (typeof ifvisible === 'object') {
-					return ifvisible;
-				} else {
-					if (typeof console !== "undefined") {
-						console.log("Required dependency (ifvisible.js) not found.  Make sure it has been included.");
-					}
-					throw {
-						name: "MissingDependencyException",
-						message: "Required dependency (ifvisible.js) not found.  Make sure it has been included."
-					};
-				}
-			},
 
 			startTimer: function () {
 				var pageName = TimeMe.currentPageName;
+
 				if (TimeMe.startStopTimes[pageName] === undefined) {
 					TimeMe.startStopTimes[pageName] = [];
 				} else {
@@ -87,6 +72,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (arrayOfTimes[arrayOfTimes.length - 1].stopTime === undefined) {
 					arrayOfTimes[arrayOfTimes.length - 1].stopTime = new Date();
 				}
+
 			},
 
 			getTimeOnCurrentPageInSeconds: function () {
@@ -94,6 +80,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			getTimeOnPageInSeconds: function (pageName) {
+				var timeInMs = TimeMe.getTimeOnPageInMilliseconds(pageName);
+				if (timeInMs === undefined) {
+					return undefined;
+				} else {
+					return TimeMe.getTimeOnPageInMilliseconds(pageName) / 1000;
+				}
+			},
+
+			getTimeOnCurrentPageInMilliseconds: function () {
+				return TimeMe.getTimeOnPageInMilliseconds(TimeMe.currentPageName);
+			},
+
+			getTimeOnPageInMilliseconds: function (pageName) {
 
 				var totalTimeOnPage = 0;
 
@@ -111,7 +110,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						stopTime = new Date();
 					}
 					var difference = stopTime - startTime;
-					timeSpentOnPageInSeconds += (difference / 1000);
+					timeSpentOnPageInSeconds += (difference);
 				}
 
 				totalTimeOnPage = Number(timeSpentOnPageInSeconds);
@@ -135,8 +134,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			setIdleDurationInSeconds: function (duration) {
 				var durationFloat = parseFloat(duration);
 				if (isNaN(durationFloat) === false) {
-					TimeMe.getIfVisibleHandle().setIdleDuration(durationFloat);
-					TimeMe.idleTimeout = durationFloat;
+					TimeMe.idleTimeoutMs = TimeMe.idleTimeout * 1000;
 				} else {
 					throw {
 						name: "InvalidDurationException",
@@ -160,31 +158,134 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 
-			listenForVisibilityEvents: function () {
-				TimeMe.getIfVisibleHandle().on("blur", function () {
-					TimeMe.stopTimer();
-				});
-
-				TimeMe.getIfVisibleHandle().on("focus", function () {
+			resetIdleCountdown: function () {
+				if (TimeMe.idle) {
 					TimeMe.startTimer();
-				});
-
-				TimeMe.getIfVisibleHandle().on("idle", function () {
-					if (TimeMe.idleTimeout > 0) {
-						TimeMe.stopTimer();
-					}
-				});
-
-				TimeMe.getIfVisibleHandle().on("wakeup", function () {
-					if (TimeMe.idleTimeout > 0) {
-						TimeMe.startTimer();
-					}
-				});
+				}
+				TimeMe.idle = false;
+				TimeMe.currentIdleTimeMs = 0;
 			},
 
-			initialize: function () {
+			checkIdleState: function () {
+				if (TimeMe.idle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
+					TimeMe.idle = true;
+					TimeMe.stopTimer();
+				} else {
+					TimeMe.currentIdleTimeMs += TimeMe.checkIdleRateMs;
+				}
+			},
+
+			visibilityChangeEventName: undefined,
+			hiddenPropName: undefined,
+
+			listenForVisibilityEvents: function () {
+
+				if (typeof document.hidden !== "undefined") {
+					TimeMe.hiddenPropName = "hidden";
+					TimeMe.visibilityChangeEventName = "visibilitychange";
+				} else if (typeof doc.mozHidden !== "undefined") {
+					TimeMe.hiddenPropName = "mozHidden";
+					TimeMe.visibilityChangeEventName = "mozvisibilitychange";
+				} else if (typeof document.msHidden !== "undefined") {
+					TimeMe.hiddenPropName = "msHidden";
+					TimeMe.visibilityChangeEventName = "msvisibilitychange";
+				} else if (typeof document.webkitHidden !== "undefined") {
+					TimeMe.hiddenPropName = "webkitHidden";
+					TimeMe.visibilityChangeEventName = "webkitvisibilitychange";
+				}
+
+				document.addEventListener(TimeMe.visibilityChangeEventName, function () {
+					if (document[TimeMe.hiddenPropName]) {
+						TimeMe.stopTimer();
+					} else {
+						TimeMe.startTimer();
+					}
+				}, false);
+
+				document.addEventListener("mousemove", function () { TimeMe.resetIdleCountdown(); });
+				document.addEventListener("keyup", function () { TimeMe.resetIdleCountdown(); });
+				document.addEventListener("touchstart", function () { TimeMe.resetIdleCountdown(); });
+				window.addEventListener("scroll", function () { TimeMe.resetIdleCountdown(); });
+
+				setInterval(function () {
+					TimeMe.checkIdleState();
+				}, TimeMe.checkIdleRateMs);
+			},
+
+			websocket: undefined,
+			websocketHost: undefined,
+			appId: undefined,
+			isBadAppId: function(appId) {
+				return /[^a-z0-9\-_]/gi.test(appId);
+			},
+			setUpWebsocket: function (options) {
+				if (options && !options.disableWebsockets) {
+					if (!options.appId) {
+						if (console) {
+							console.error("A valid alphanumeric appId must be provided as an option to TimeMe.initialize() in order to leverage websockets. " + 
+							"For trial purposes, you can provide any alphanumeric appId (with underscore or hyphen) of your choosing.  To see usage statistics, go to <TODO!!!>.  " +
+							"To disable websockets and this message, provide a valid appId or call TimeMe.initialize() with disableWebsockets: true");
+						}
+					} else if (TimeMe.isBadAppId(options.appId)) {
+						if (console) {
+							console.error("A valid alphanumeric appId must be provided as an option to TimeMe.initialize(). " + 
+							"The provided appId was invalid: " + options.appId);
+						}
+					} else {
+						var websocketHost = options.websocketHost || "ws://bittermanjs.com:3008"; // TODO - real value!
+						TimeMe.appId = options.appId;
+						TimeMe.websocket = new WebSocket(websocketHost);
+						window.onbeforeunload = function (event) {
+							TimeMe.sendCurrentTime();
+						};
+						TimeMe.websocket.onopen = function(){
+							TimeMe.sendInitWsRequest();
+						}
+						TimeMe.websocket.onerror = function(error) {
+							if (console) {
+								console.log("Error occurred in websocket connection: " + error);
+							}
+						}
+						TimeMe.websocket.onmessage = function (event) {
+							if (console) {
+								console.log(event.data);
+							}
+						}	
+					}
+				}
+			},
+			websocketSend: function (data) {
+				TimeMe.websocket.send(JSON.stringify(data));
+			},
+			sendCurrentTime: function () {
+				var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInMilliseconds();
+				var data = {
+					type: "INSERT_TIME",
+					appId: TimeMe.appId,
+					timeOnPageMs: timeSpentOnPage,
+					pageName: TimeMe.currentPageName
+				};
+				TimeMe.websocketSend(data);
+			},
+			sendInitWsRequest: function() {
+				var data = {
+					type: "INIT",
+					appId: TimeMe.appId
+				};
+				TimeMe.websocketSend(data);
+			},
+			initialize: function (options) {
+				if (options && options.idleTimeoutInSeconds) {
+					if (isNaN(options.idleTimeoutInSeconds) && options.idleTimeoutInSeconds < 1) {
+						throw { 
+							name: "InvalidTimeoutException", 
+							message: "Any provided timeouts must be a valid integer greater than 0." }
+					}
+					TimeMe.idleTimeoutMs = options.idleTimeoutInSeconds * 1000;
+				}
 				TimeMe.listenForVisibilityEvents();
 				TimeMe.startTimer();
+				TimeMe.setUpWebsocket(options);				
 			}
 		};
 		return TimeMe;

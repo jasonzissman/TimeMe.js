@@ -17,9 +17,6 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// TODO!!! Create helper function that simply calls down this code
-// instead of telling users to put it in their code up front.
-
 (function () {
 	(function (root, factory) {
 		if (typeof module !== 'undefined' && module.exports) {
@@ -39,7 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			startStopTimes: {},
 			idleTimeoutMs: 60 * 1000,
 			currentIdleTimeMs: 0,
-			checkIdleRateMs: 500,
+			checkIdleRateMs: 250,
 			idle: false,
 			currentPageName: "default-page-name",
 
@@ -72,7 +69,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (arrayOfTimes[arrayOfTimes.length - 1].stopTime === undefined) {
 					arrayOfTimes[arrayOfTimes.length - 1].stopTime = new Date();
 				}
-
 			},
 
 			getTimeOnCurrentPageInSeconds: function () {
@@ -214,78 +210,66 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			websocket: undefined,
 			websocketHost: undefined,
-			appId: undefined,
-			isBadAppId: function(appId) {
-				return /[^a-z0-9\-_]/gi.test(appId);
-			},
-			setUpWebsocket: function (options) {
-				if (options && !options.disableWebsockets) {
-					if (!options.appId) {
-						if (console) {
-							console.error("A valid alphanumeric appId must be provided as an option to TimeMe.initialize() in order to leverage websockets. " + 
-							"For trial purposes, you can provide any alphanumeric appId (with underscore or hyphen) of your choosing.  To see usage statistics, go to <TODO!!!>.  " +
-							"To disable websockets and this message, provide a valid appId or call TimeMe.initialize() with disableWebsockets: true");
-						}
-					} else if (TimeMe.isBadAppId(options.appId)) {
-						if (console) {
-							console.error("A valid alphanumeric appId must be provided as an option to TimeMe.initialize(). " + 
-							"The provided appId was invalid: " + options.appId);
-						}
-					} else {
-						var websocketHost = options.websocketHost || "ws://bittermanjs.com:3008"; // TODO - real value!
-						TimeMe.appId = options.appId;
-						TimeMe.websocket = new WebSocket(websocketHost);
-						window.onbeforeunload = function (event) {
-							TimeMe.sendCurrentTime();
-						};
-						TimeMe.websocket.onopen = function(){
-							TimeMe.sendInitWsRequest();
-						}
-						TimeMe.websocket.onerror = function(error) {
-							if (console) {
-								console.log("Error occurred in websocket connection: " + error);
-							}
-						}
-						TimeMe.websocket.onmessage = function (event) {
-							if (console) {
-								console.log(event.data);
-							}
-						}	
+			setUpWebsocket: function (websocketOptions) {
+				if (websocketOptions && websocketOptions.enableWebsocketReporting) {
+					var websocketHost = websocketOptions.websocketHost; // "ws://hostname:port"
+					TimeMe.websocket = new WebSocket(websocketHost);
+					window.onbeforeunload = function (event) {
+						TimeMe.sendCurrentTime(websocketOptions.appId);
+					};
+					TimeMe.websocket.onopen = function () {
+						TimeMe.sendInitWsRequest(websocketOptions.appId);
 					}
+					TimeMe.websocket.onerror = function (error) {
+						if (console) {
+							console.log("Error occurred in websocket connection: " + error);
+						}
+					}
+					TimeMe.websocket.onmessage = function (event) {
+						if (console) {
+							console.log(event.data);
+						}
+					}
+
 				}
 			},
 			websocketSend: function (data) {
 				TimeMe.websocket.send(JSON.stringify(data));
 			},
-			sendCurrentTime: function () {
+			sendCurrentTime: function (appId) {
 				var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInMilliseconds();
 				var data = {
 					type: "INSERT_TIME",
-					appId: TimeMe.appId,
+					appId: appId,
 					timeOnPageMs: timeSpentOnPage,
 					pageName: TimeMe.currentPageName
 				};
 				TimeMe.websocketSend(data);
 			},
-			sendInitWsRequest: function() {
+			sendInitWsRequest: function (appId) {
 				var data = {
 					type: "INIT",
-					appId: TimeMe.appId
+					appId: appId
 				};
 				TimeMe.websocketSend(data);
 			},
+
 			initialize: function (options) {
-				if (options && options.idleTimeoutInSeconds) {
-					if (isNaN(options.idleTimeoutInSeconds) && options.idleTimeoutInSeconds < 1) {
-						throw { 
-							name: "InvalidTimeoutException", 
-							message: "Any provided timeouts must be a valid integer greater than 0." }
-					}
-					TimeMe.idleTimeoutMs = options.idleTimeoutInSeconds * 1000;
+
+				var idleTimeoutInSeconds = 30;
+				var currentPageName = "default-page-name";
+				var websocktOptions = undefined;
+				if (options) {
+					idleTimeoutInSeconds = options.idleTimeoutInSeconds || 30;
+					currentPageName = options.currentPageName || "default-page-name";
+					websocktOptions = options.enableWebsocketReporting;
 				}
+
+				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds);
+				TimeMe.setCurrentPageName(currentPageName);
+				TimeMe.setUpWebsocket(websocktOptions);
 				TimeMe.listenForVisibilityEvents();
 				TimeMe.startTimer();
-				TimeMe.setUpWebsocket(options);				
 			}
 		};
 		return TimeMe;

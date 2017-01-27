@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/jasonzissman/TimeMe.js/issues"
   },
-  "homepage": "https://github.com/jasonzissman/TimeMe.js#readme"
+  "homepage": "https://github.com/jasonzissman/TimeMe.js#readme",
+  "dependencies": {
+    "bower": "^1.8.0"
+  }
 }

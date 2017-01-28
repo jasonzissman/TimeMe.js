@@ -23,7 +23,7 @@ Alternatively, you can download the most recent copy at <a href="https://github.
 
 <h3>How do I use TimeMe.js?</h3>
 
-First, obtain a copy of timeme.js.  You can get both by installing TimeMe.js via Bower: <br/><br/>
+First, obtain a copy of timeme.js.  You can do so by installing TimeMe.js via Bower: <br/><br/>
 <div class="code-block"><pre><code>bower install timeme.js</pre></code></div><br/>
 Then, simply include the following lines of code in your page's head element: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="timeme.js"&gt;&lt;/script&gt;
@@ -209,3 +209,10 @@ Clears all recorded times for all pages.
 <br/><br/>
 </div><br/>				
 </div>		
+<h3>Build Tools</h3>
+To minify the code, run the following:
+<div class="code-block">
+<pre><code>npm install uglify-js -g
+uglifyjs timeme.js --mangle --compress --support-ie8 --output timeme.min.js</code></pre>
+<br/><br/>
+</div><br/>	

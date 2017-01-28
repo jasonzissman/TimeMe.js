@@ -5,14 +5,23 @@
 		<script src="../timeme.js"></script>
 		<script type="text/javascript">
 			TimeMe.initialize({
-				currentPageName: "my-home-page",
-				idleTimeoutInSeconds: 5,
-				websocktOptions: {
+				currentPageName: "my-home-page", // current page
+				idleTimeoutInSeconds: 5, // stop recording time due to inactivity
+				websocktOptions: { // optional
 					enableWebsocketReporting: true,
-					websocketHost: "ws://bittermanjs.com:3008",
+					websocketHost: "ws://your_host.com:your_port",
 					appId: "insert-your-made-up-app-id"
 				}
 			});
+
+			TimeMe.callAfterTimeElapsedInSeconds(4, function(){
+				console.log("The user has been using the page for 4 seconds! Let's prompt them with something.");
+			});
+
+			TimeMe.callAfterTimeElapsedInSeconds(9, function(){
+				console.log("The user has been using the page for 9 seconds! Let's prompt them with something.");
+			});
+
 			window.onload = function(){
 				setInterval(function(){
 					var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();

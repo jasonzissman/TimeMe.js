@@ -36,9 +36,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			startStopTimes: {},
 			idleTimeoutMs: 60 * 1000,
 			currentIdleTimeMs: 0,
-			checkIdleRateMs: 250,
+			checkStateRateMs: 250,
 			idle: false,
 			currentPageName: "default-page-name",
+			callbacks: [],
 
 			startTimer: function () {
 				var pageName = TimeMe.currentPageName;
@@ -162,12 +163,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.currentIdleTimeMs = 0;
 			},
 
-			checkIdleState: function () {
+			callAfterTimeElapsedInSeconds: function(timeInSeconds, callback) {
+				TimeMe.callbacks.push({
+					timeInSeconds: timeInSeconds,
+					callback: callback,
+					pending: true
+				});
+			},
+
+			checkState: function () {
+				for(var i=0; i<TimeMe.callbacks.length; i++){
+					if (TimeMe.callbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.callbacks[i].timeInSeconds) {
+						TimeMe.callbacks[i].callback();
+						TimeMe.callbacks[i].pending = false;
+					}
+				}
+
 				if (TimeMe.idle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
 					TimeMe.idle = true;
 					TimeMe.stopTimer();
 				} else {
-					TimeMe.currentIdleTimeMs += TimeMe.checkIdleRateMs;
+					TimeMe.currentIdleTimeMs += TimeMe.checkStateRateMs;
 				}
 			},
 
@@ -212,8 +228,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				window.addEventListener("scroll", function () { TimeMe.resetIdleCountdown(); });
 
 				setInterval(function () {
-					TimeMe.checkIdleState();
-				}, TimeMe.checkIdleRateMs);
+					TimeMe.checkState();
+				}, TimeMe.checkStateRateMs);
 			},
 
 			websocket: undefined,

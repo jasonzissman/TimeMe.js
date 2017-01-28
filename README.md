@@ -120,12 +120,17 @@ open the test files to execute the tests.
 <a name="API"></a>
 <h3>API</h3>
 <div class="code-block">
-<pre><code>TimeMe.initialize(options);</code></pre>
+<pre><code>// options.currentPageName // - Name of the page (home, about, etc.)
+// options.idleTimeoutInSeconds // - how much inactive time before user considered idle
+// options.websocktOptions: { 
+//   enableWebsocketReporting: true, // Turn on websocket reporting
+// 	 websocketHost: "ws://your_host:your_port",
+// 	 appId: "insert-your-made-up-app-id"
+// }
+TimeMe.initialize(options);</code></pre>
 Initializes the timer.  Should only be called when first importing the
-library and beginning to time page usage.  Pass in following options:
-<pre><code>currentPageName // - Name of the page (home, about, etc.)
-idleTimeoutInSeconds // - how much inactive time before user considered idle</code></pre>
-<br/>
+library and beginning to time page usage. All options are optional.
+<br/><br/>
 </div><br/>
 <div class="code-block">
 <pre><code>var timeInSeconds = TimeMe.getTimeOnCurrentPageInSeconds();</code></pre>

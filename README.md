@@ -163,7 +163,7 @@ Sets up a handler that executes after the user has spent the specified time inte
 <pre><code>TimeMe.callWhenUserLeaves(callback, [[numberOfInvocations]]);</code></pre>
 Sets up a handler that executes when the user is no longer interacting with the page due to inactivity,
 switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.
-<br/><br/>
+</div><br/>
 <div class="code-block">
 <pre><code>TimeMe.callWhenUserReturns(callback, [[numberOfInvocations]]);</code></pre>
 Sets up a handler that executes when the user returns to the page after inactivity,

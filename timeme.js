@@ -186,8 +186,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					var userReturnedCallback = this.userReturnCallbacks[i];
 					var numberTimes = userReturnedCallback.numberOfTimesToInvoke;
 					if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
-						userReturnedCallback.callback();
 						userReturnedCallback.numberOfTimesToInvoke -= 1;
+						userReturnedCallback.callback();
 					}
 				}				
 				TimeMe.startTimer();
@@ -198,8 +198,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					var userHasLeftCallback = this.userLeftCallbacks[i];
 					var numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
 					if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
-						userHasLeftCallback.callback();
 						userHasLeftCallback.numberOfTimesToInvoke -= 1;
+						userHasLeftCallback.callback();
 					}
 				}
 				TimeMe.stopTimer();

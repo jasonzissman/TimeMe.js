@@ -1,4 +1,4 @@
-/*Copyright (c) 2015 Jason Zissman
+/*Copyright (c) 2017 Jason Zissman
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -17,50 +17,36 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* 
-	Notice!  This project requires ifvisible.js to run.  You can get a copy from
-	the ifvisible.js github (https://github.com/serkanyersen/ifvisible.js) or
-	by running "bower install timeme.js", which will install both TimeMe.js and ifvisible.js.
-*/
-
-(function() {
-	(function(root, factory) {
+(function () {
+	(function (root, factory) {
 		if (typeof module !== 'undefined' && module.exports) {
 			// CommonJS
-			return module.exports = factory(require('ifvisible.js'));
+			return module.exports = factory();
 		} else if (typeof define === 'function' && define.amd) {
 			// AMD
-			define(['ifvisible'], function (ifvisible) {
-				return (root.TimeMe = factory(ifvisible));
+			define([], function () {
+				return (root.TimeMe = factory());
 			});
 		} else {
 			// Global Variables
-			return root.TimeMe = factory(root.ifvisible);
+			return root.TimeMe = factory();
 		}
-	})(this, function(ifvisible) {
+	})(this, function () {
 		var TimeMe = {
 			startStopTimes: {},
-
-			idleTimeout: 60,
-
+			idleTimeoutMs: 60 * 1000,
+			currentIdleTimeMs: 0,
+			checkStateRateMs: 250,			
+			active: false,
+			idle: false,
 			currentPageName: "default-page-name",
-
-			getIfVisibleHandle: function () {
-				if (typeof ifvisible === 'object') {
-					return ifvisible;
-				} else {
-					if (typeof console !== "undefined") {
-						console.log("Required dependency (ifvisible.js) not found.  Make sure it has been included.");
-					}
-					throw {
-						name: "MissingDependencyException",
-						message: "Required dependency (ifvisible.js) not found.  Make sure it has been included."
-					};
-				}
-			},
+			timeElapsedCallbacks: [],
+			userLeftCallbacks: [],
+			userReturnCallbacks: [],
 
 			startTimer: function () {
 				var pageName = TimeMe.currentPageName;
+
 				if (TimeMe.startStopTimes[pageName] === undefined) {
 					TimeMe.startStopTimes[pageName] = [];
 				} else {
@@ -75,6 +61,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					"startTime": new Date(),
 					"stopTime": undefined
 				});
+				TimeMe.active = true;
 			},
 
 			stopTimer: function () {
@@ -87,6 +74,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (arrayOfTimes[arrayOfTimes.length - 1].stopTime === undefined) {
 					arrayOfTimes[arrayOfTimes.length - 1].stopTime = new Date();
 				}
+				TimeMe.active = false;
 			},
 
 			getTimeOnCurrentPageInSeconds: function () {
@@ -94,6 +82,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			getTimeOnPageInSeconds: function (pageName) {
+				var timeInMs = TimeMe.getTimeOnPageInMilliseconds(pageName);
+				if (timeInMs === undefined) {
+					return undefined;
+				} else {
+					return TimeMe.getTimeOnPageInMilliseconds(pageName) / 1000;
+				}
+			},
+
+			getTimeOnCurrentPageInMilliseconds: function () {
+				return TimeMe.getTimeOnPageInMilliseconds(TimeMe.currentPageName);
+			},
+
+			getTimeOnPageInMilliseconds: function (pageName) {
 
 				var totalTimeOnPage = 0;
 
@@ -111,7 +112,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						stopTime = new Date();
 					}
 					var difference = stopTime - startTime;
-					timeSpentOnPageInSeconds += (difference / 1000);
+					timeSpentOnPageInSeconds += (difference);
 				}
 
 				totalTimeOnPage = Number(timeSpentOnPageInSeconds);
@@ -135,18 +136,19 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			setIdleDurationInSeconds: function (duration) {
 				var durationFloat = parseFloat(duration);
 				if (isNaN(durationFloat) === false) {
-					TimeMe.getIfVisibleHandle().setIdleDuration(durationFloat);
-					TimeMe.idleTimeout = durationFloat;
+					TimeMe.idleTimeoutMs = duration * 1000;
 				} else {
 					throw {
 						name: "InvalidDurationException",
 						message: "An invalid duration time (" + duration + ") was provided."
 					};
 				}
+				return this;
 			},
 
 			setCurrentPageName: function (pageName) {
 				TimeMe.currentPageName = pageName;
+				return this;
 			},
 
 			resetRecordedPageTime: function (pageName) {
@@ -160,30 +162,197 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 
-			listenForVisibilityEvents: function () {
-				TimeMe.getIfVisibleHandle().on("blur", function () {
-					TimeMe.stopTimer();
-				});
+			resetIdleCountdown: function () {
+				if (TimeMe.idle) {
+					TimeMe.triggerUserHasReturned();
+				}
+				TimeMe.idle = false;
+				TimeMe.currentIdleTimeMs = 0;
+			},
 
-				TimeMe.getIfVisibleHandle().on("focus", function () {
-					TimeMe.startTimer();
-				});
+			callWhenUserLeaves: function(callback, numberOfTimesToInvoke) {
+				this.userLeftCallbacks.push({
+					callback: callback,
+					numberOfTimesToInvoke: numberOfTimesToInvoke
+				})
+			},
 
-				TimeMe.getIfVisibleHandle().on("idle", function () {
-					if (TimeMe.idleTimeout > 0) {
-						TimeMe.stopTimer();
+			callWhenUserReturns: function(callback, numberOfTimesToInvoke) {
+				this.userReturnCallbacks.push({
+					callback: callback,
+					numberOfTimesToInvoke: numberOfTimesToInvoke
+				})
+			},
+
+			triggerUserHasReturned: function() {
+				if (!TimeMe.active) {
+					for(var i=0; i<this.userReturnCallbacks.length; i++) {
+						var userReturnedCallback = this.userReturnCallbacks[i];
+						var numberTimes = userReturnedCallback.numberOfTimesToInvoke;
+						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
+							userReturnedCallback.numberOfTimesToInvoke -= 1;
+							userReturnedCallback.callback();
+						}
+					}				
+				}
+				TimeMe.startTimer();
+			},
+
+			triggerUserHasLeftPage: function() {
+				if (TimeMe.active) {
+					for(var i=0; i<this.userLeftCallbacks.length; i++) {
+						var userHasLeftCallback = this.userLeftCallbacks[i];
+						var numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
+						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
+							userHasLeftCallback.numberOfTimesToInvoke -= 1;
+							userHasLeftCallback.callback();
+						}
 					}
-				});
+				}
+				TimeMe.stopTimer();
+			},			
 
-				TimeMe.getIfVisibleHandle().on("wakeup", function () {
-					if (TimeMe.idleTimeout > 0) {
-						TimeMe.startTimer();
-					}
+			callAfterTimeElapsedInSeconds: function(timeInSeconds, callback) {
+				TimeMe.timeElapsedCallbacks.push({
+					timeInSeconds: timeInSeconds,
+					callback: callback,
+					pending: true
 				});
 			},
 
-			initialize: function () {
-				TimeMe.listenForVisibilityEvents();
+			checkState: function () {
+				for(var i=0; i<TimeMe.timeElapsedCallbacks.length; i++){
+					if (TimeMe.timeElapsedCallbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
+						TimeMe.timeElapsedCallbacks[i].callback();
+						TimeMe.timeElapsedCallbacks[i].pending = false;
+					}
+				}
+
+				if (TimeMe.idle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
+					TimeMe.idle = true;
+					TimeMe.triggerUserHasLeftPage();
+				} else {
+					TimeMe.currentIdleTimeMs += TimeMe.checkStateRateMs;
+				}
+			},
+
+			visibilityChangeEventName: undefined,
+			hiddenPropName: undefined,
+
+			listenForVisibilityEvents: function () {
+
+				if (typeof document.hidden !== "undefined") {
+					TimeMe.hiddenPropName = "hidden";
+					TimeMe.visibilityChangeEventName = "visibilitychange";
+				} else if (typeof doc.mozHidden !== "undefined") {
+					TimeMe.hiddenPropName = "mozHidden";
+					TimeMe.visibilityChangeEventName = "mozvisibilitychange";
+				} else if (typeof document.msHidden !== "undefined") {
+					TimeMe.hiddenPropName = "msHidden";
+					TimeMe.visibilityChangeEventName = "msvisibilitychange";
+				} else if (typeof document.webkitHidden !== "undefined") {
+					TimeMe.hiddenPropName = "webkitHidden";
+					TimeMe.visibilityChangeEventName = "webkitvisibilitychange";
+				}
+
+				document.addEventListener(TimeMe.visibilityChangeEventName, function () {
+					if (document[TimeMe.hiddenPropName]) {
+						TimeMe.triggerUserHasLeftPage();
+					} else {
+						TimeMe.triggerUserHasReturned();
+					}
+				}, false);
+
+				window.addEventListener('blur', function() {
+					TimeMe.triggerUserHasLeftPage();
+				});
+
+				window.addEventListener('focus', function() {
+					TimeMe.triggerUserHasReturned();
+				});				
+
+				document.addEventListener("mousemove", function () { TimeMe.resetIdleCountdown(); });
+				document.addEventListener("keyup", function () { TimeMe.resetIdleCountdown(); });
+				document.addEventListener("touchstart", function () { TimeMe.resetIdleCountdown(); });
+				window.addEventListener("scroll", function () { TimeMe.resetIdleCountdown(); });
+
+				setInterval(function () {
+					TimeMe.checkState();
+				}, TimeMe.checkStateRateMs);
+			},
+
+			websocket: undefined,
+
+			websocketHost: undefined,
+
+			setUpWebsocket: function (websocketOptions) {
+				if (window.WebSocket && websocketOptions) {
+					var websocketHost = websocketOptions.websocketHost; // "ws://hostname:port"
+					try {
+						TimeMe.websocket = new WebSocket(websocketHost);
+						window.onbeforeunload = function (event) {
+							TimeMe.sendCurrentTime(websocketOptions.appId);
+						};
+						TimeMe.websocket.onopen = function () {
+							TimeMe.sendInitWsRequest(websocketOptions.appId);
+						}
+						TimeMe.websocket.onerror = function (error) {
+							if (console) {
+								console.log("Error occurred in websocket connection: " + error);
+							}
+						}
+						TimeMe.websocket.onmessage = function (event) {
+							if (console) {
+								console.log(event.data);
+							}
+						}						
+					} catch (error) {
+						if (console) {
+							console.error("Failed to connect to websocket host.  Error:" + error);
+						}						
+					}
+				}
+				return this;
+			},
+
+			websocketSend: function (data) {
+				TimeMe.websocket.send(JSON.stringify(data));
+			},
+
+			sendCurrentTime: function (appId) {
+				var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInMilliseconds();
+				var data = {
+					type: "INSERT_TIME",
+					appId: appId,
+					timeOnPageMs: timeSpentOnPage,
+					pageName: TimeMe.currentPageName
+				};
+				TimeMe.websocketSend(data);
+			},
+			sendInitWsRequest: function (appId) {
+				var data = {
+					type: "INIT",
+					appId: appId
+				};
+				TimeMe.websocketSend(data);
+			},
+
+			initialize: function (options) {
+
+				var idleTimeoutInSeconds = TimeMe.idleTimeoutMs || 30;
+				var currentPageName = TimeMe.currentPageName || "default-page-name";
+				var websocktOptions = undefined;
+
+				if (options) {
+					idleTimeoutInSeconds = options.idleTimeoutInSeconds || idleTimeoutInSeconds;
+					currentPageName = options.currentPageName || currentPageName;
+					websocktOptions = options.websocktOptions;
+				}
+
+				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)
+					  .setCurrentPageName(currentPageName)
+					  .setUpWebsocket(websocktOptions)
+				      .listenForVisibilityEvents();
 				TimeMe.startTimer();
 			}
 		};

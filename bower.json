@@ -1,7 +1,7 @@
 {
   "name": "timeme.js",
   "main": "timeme.js",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "homepage": "https://github.com/jasonzissman/TimeMe.js",
   "authors": [
     "Jason Zissman"
@@ -19,9 +19,6 @@
     "test",
     "tests"
   ],
-  "dependencies": {
-    "ifvisible.js": "~1.0.4"
-  },
   "devDependencies": {
     "qunit": "~1.20.0"
   }

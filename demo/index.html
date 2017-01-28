@@ -1,13 +1,26 @@
 <html>
 	<head>
 		<title>Page Visibility Test</title>
-		<script src="ifvisible.js"></script>
 		<link rel="stylesheet" type="text/css" href="index.css">
-		<script src="../timeme.js"></script>
+		<script src="../timeme.min.js"></script>
 		<script type="text/javascript">
-			TimeMe.setIdleDurationInSeconds(15);
-			TimeMe.setCurrentPageName("my-home-page");
-			TimeMe.initialize();
+			TimeMe.initialize({
+				currentPageName: "my-home-page", // current page
+				idleTimeoutInSeconds: 5, // stop recording time due to inactivity
+				websocktOptions: { // optional
+					websocketHost: "ws://your_host:your_port",
+					appId: "insert-your-made-up-app-id"
+				}
+			});
+
+			TimeMe.callAfterTimeElapsedInSeconds(4, function(){
+				console.log("The user has been using the page for 4 seconds! Let's prompt them with something.");
+			});
+
+			TimeMe.callAfterTimeElapsedInSeconds(9, function(){
+				console.log("The user has been using the page for 9 seconds! Let's prompt them with something.");
+			});
+
 			window.onload = function(){
 				setInterval(function(){
 					var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
@@ -30,8 +43,8 @@
 			<h3>Demo</h3>
 			Notice the timer above?  It is tracking how long you are actively viewing this web page.
 			It is smart enough to stop incrementing when you minimize the browser or if you switch to
-			a different tab.  Try it out!  It also stops incrementing if you go idle for more than 15
-			seconds (meaning you don't move the mouse or enter the keyboard for 15 seconds).  While 15
+			a different tab.  Try it out!  It also stops incrementing if you go idle for more than 5
+			seconds (meaning you don't move the mouse or enter the keyboard for 5 seconds).  While 5
 			seconds is a relatively short time to gauge inactivity, it can be increased to a more
 			realistic value (such as 60 seconds) to determine that a user is no longer viewing the page
 			and has left the browser or computer altogether.

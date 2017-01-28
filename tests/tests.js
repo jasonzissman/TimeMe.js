@@ -88,3 +88,80 @@ QUnit.test("initialize() should start timer", function( assert ) {
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped." );
 	assert.ok(actualTime >= 0, "Should be greater than or equal to 0." );
 });
+
+QUnit.test("callWhenUserLeaves() should execute only once if indicated", function( assert ) {
+	var counter = 0;
+	TimeMe.callWhenUserLeaves(function() {
+		counter ++;
+	}, 1);
+	assert.equal(counter, 0);
+
+	TimeMe.active = true;
+	TimeMe.triggerUserHasLeftPage();
+	assert.equal(counter, 1);
+
+	TimeMe.active = true;
+	TimeMe.triggerUserHasLeftPage();
+	assert.equal(counter, 1);
+
+	TimeMe.active = true;
+	TimeMe.triggerUserHasLeftPage();
+	assert.equal(counter, 1);
+});
+QUnit.test("callWhenUserLeaves() should execute repeatedly if no limit specified", function( assert ) {
+	var counter = 0;
+	TimeMe.callWhenUserLeaves(function() {
+		counter ++;
+	});
+	assert.equal(counter, 0);
+
+	TimeMe.active = true;
+	TimeMe.triggerUserHasLeftPage();
+	assert.equal(counter, 1);
+
+	TimeMe.active = true;
+	TimeMe.triggerUserHasLeftPage();
+	assert.equal(counter, 2);
+	
+	TimeMe.active = true;
+	TimeMe.triggerUserHasLeftPage();
+	assert.equal(counter, 3);
+});
+QUnit.test("callWhenUserReturns() should execute only once if indicated", function( assert ) {
+	var counter = 0;
+	TimeMe.callWhenUserReturns(function() {
+		counter ++;
+	}, 1);
+	assert.equal(counter, 0);
+
+	TimeMe.active = false;
+	TimeMe.triggerUserHasReturned();
+	assert.equal(counter, 1);
+
+	TimeMe.active = false;
+	TimeMe.triggerUserHasReturned();
+	assert.equal(counter, 1);
+	
+	TimeMe.active = false;
+	TimeMe.triggerUserHasReturned();
+	assert.equal(counter, 1);
+});
+QUnit.test("callWhenUserReturns() should execute repeatedly if no limit specified", function( assert ) {
+	var counter = 0;
+	TimeMe.callWhenUserReturns(function() {
+		counter ++;
+	});
+	assert.equal(counter, 0);
+
+	TimeMe.active = false;
+	TimeMe.triggerUserHasReturned();
+	assert.equal(counter, 1);
+
+	TimeMe.active = false;
+	TimeMe.triggerUserHasReturned();
+	assert.equal(counter, 2);
+
+	TimeMe.active = false;
+	TimeMe.triggerUserHasReturned();
+	assert.equal(counter, 3);
+});

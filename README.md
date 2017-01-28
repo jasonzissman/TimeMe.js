@@ -52,7 +52,7 @@ page for a set period of time.  Simply call TimeMe.callAfterTimeElapsedInSeconds
 	console.log("The user has been using the page for 15 seconds! Let's prompt them with something.");
 });</code></pre>
 </div>
-TimeMe also lets you executed code when a user leaves the page (due to switching tabs, inactivity, etc.) and
+TimeMe also lets you execute code when a user leaves the page (due to switching tabs, inactivity, etc.) and
 when he or she returns:
 <div class="code-block">
 <pre><code>// Executes the first 5 times a user leaves the page

@@ -58,10 +58,10 @@ page for a set period of time.  Simply call TimeMe.callAfterTimeElapsedInSeconds
 In most cases you will want to store the time spent on a page for analytic purposes.  You will
 likely need to send the time spent on a page to a back-end server. 
 
-<h5>Using WebSockets to send times</h5>
-TimeMe.js has websocket reporting built into it.  It can send the time spent on a page to your
-websocket listening server when a user finishes their session. Simply provide a few arguments to the initialize()
-method to get started:<pre><code>TimeMe.initialize({
+<h4>Using WebSockets to send times</h4>
+TimeMe.js has websocket reporting built into it.  Your page will establish a websocket connection with your
+websocket server.  TimeMe will end the connection and report the user's time when the user leaves. 
+Simply provide a few arguments to the initialize() method to enable it:<pre><code>TimeMe.initialize({
 	currentPageName: "my-home-page", // current page
 	idleTimeoutInSeconds: 30, // seconds 
 	websocktOptions: { // optional
@@ -71,12 +71,11 @@ method to get started:<pre><code>TimeMe.initialize({
 	}
 });</code></pre>
 
-<h5>Using standard http requests to send time</h5>
+<h4>Using standard http requests to send time</h4>
 Alternatively you can issue an HTTP request to your back end server to report time.
-Note: the following example send the request during the the window.onbeforeunload event.
-This approach may not work in certain browsers as their is no guarantee that the http request
-will complete before the browser terminates it.  Consider sending the time at a certain polling period
-as an alternative.<br/><br/>
+Note: the following example sends an HTTP request during the the window.onbeforeunload event.
+This approach may not work in all browsers as there is no guarantee that the request
+will complete before the browser terminates it.<br/><br/>
 <div class="code-block">
 <pre><code>window.onbeforeunload = function (event) {
 	xmlhttp=new XMLHttpRequest();
@@ -126,7 +125,7 @@ Initializes the timer.  Should only be called when first importing the
 library and beginning to time page usage.  Pass in following options:
 <pre><code>currentPageName // - Name of the page (home, about, etc.)
 idleTimeoutInSeconds // - how much inactive time before user considered idle</code></pre>
-<br/><br/>
+<br/>
 </div><br/>
 <div class="code-block">
 <pre><code>var timeInSeconds = TimeMe.getTimeOnCurrentPageInSeconds();</code></pre>

@@ -36,7 +36,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			startStopTimes: {},
 			idleTimeoutMs: 60 * 1000,
 			currentIdleTimeMs: 0,
-			checkStateRateMs: 250,
+			checkStateRateMs: 250,			
+			active: false,
 			idle: false,
 			currentPageName: "default-page-name",
 			timeElapsedCallbacks: [],
@@ -60,6 +61,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					"startTime": new Date(),
 					"stopTime": undefined
 				});
+				TimeMe.active = true;
 			},
 
 			stopTimer: function () {
@@ -72,6 +74,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (arrayOfTimes[arrayOfTimes.length - 1].stopTime === undefined) {
 					arrayOfTimes[arrayOfTimes.length - 1].stopTime = new Date();
 				}
+				TimeMe.active = false;
 			},
 
 			getTimeOnCurrentPageInSeconds: function () {
@@ -182,24 +185,28 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			triggerUserHasReturned: function() {
-				for(var i=0; i<this.userReturnCallbacks.length; i++) {
-					var userReturnedCallback = this.userReturnCallbacks[i];
-					var numberTimes = userReturnedCallback.numberOfTimesToInvoke;
-					if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
-						userReturnedCallback.numberOfTimesToInvoke -= 1;
-						userReturnedCallback.callback();
-					}
-				}				
+				if (!TimeMe.active) {
+					for(var i=0; i<this.userReturnCallbacks.length; i++) {
+						var userReturnedCallback = this.userReturnCallbacks[i];
+						var numberTimes = userReturnedCallback.numberOfTimesToInvoke;
+						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
+							userReturnedCallback.numberOfTimesToInvoke -= 1;
+							userReturnedCallback.callback();
+						}
+					}				
+				}
 				TimeMe.startTimer();
 			},
 
 			triggerUserHasLeftPage: function() {
-				for(var i=0; i<this.userLeftCallbacks.length; i++) {
-					var userHasLeftCallback = this.userLeftCallbacks[i];
-					var numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
-					if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
-						userHasLeftCallback.numberOfTimesToInvoke -= 1;
-						userHasLeftCallback.callback();
+				if (TimeMe.active) {
+					for(var i=0; i<this.userLeftCallbacks.length; i++) {
+						var userHasLeftCallback = this.userLeftCallbacks[i];
+						var numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
+						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
+							userHasLeftCallback.numberOfTimesToInvoke -= 1;
+							userHasLeftCallback.callback();
+						}
 					}
 				}
 				TimeMe.stopTimer();

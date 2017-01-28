@@ -23,8 +23,9 @@ Alternatively, you can download the most recent copy at <a href="https://github.
 
 <h3>How do I use TimeMe.js?</h3>
 
-First, obtain a copy of timeme.js.  You can do so by installing TimeMe.js via Bower: <br/><br/>
-<div class="code-block"><pre><code>bower install timeme.js</pre></code></div><br/>
+First, obtain a copy of timeme.js.  You can do so by installing TimeMe.js via npm or Bower: <br/><br/>
+<div class="code-block"><pre><code>npm install timeme.js --save
+bower install timeme.js</pre></code></div><br/>
 Then, simply include the following lines of code in your page's head element: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="timeme.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;

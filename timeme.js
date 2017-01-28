@@ -138,10 +138,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						message: "An invalid duration time (" + duration + ") was provided."
 					};
 				}
+				return this;
 			},
 
 			setCurrentPageName: function (pageName) {
 				TimeMe.currentPageName = pageName;
+				return this;
 			},
 
 			resetRecordedPageTime: function (pageName) {
@@ -233,33 +235,43 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			websocket: undefined,
-			websocketHost: undefined,
-			setUpWebsocket: function (websocketOptions) {
-				if (websocketOptions && websocketOptions.enableWebsocketReporting) {
-					var websocketHost = websocketOptions.websocketHost; // "ws://hostname:port"
-					TimeMe.websocket = new WebSocket(websocketHost);
-					window.onbeforeunload = function (event) {
-						TimeMe.sendCurrentTime(websocketOptions.appId);
-					};
-					TimeMe.websocket.onopen = function () {
-						TimeMe.sendInitWsRequest(websocketOptions.appId);
-					}
-					TimeMe.websocket.onerror = function (error) {
-						if (console) {
-							console.log("Error occurred in websocket connection: " + error);
-						}
-					}
-					TimeMe.websocket.onmessage = function (event) {
-						if (console) {
-							console.log(event.data);
-						}
-					}
 
+			websocketHost: undefined,
+
+			setUpWebsocket: function (websocketOptions) {
+				if (window.WebSocket && websocketOptions) {
+					var websocketHost = websocketOptions.websocketHost; // "ws://hostname:port"
+					try {
+						TimeMe.websocket = new WebSocket(websocketHost);
+						window.onbeforeunload = function (event) {
+							TimeMe.sendCurrentTime(websocketOptions.appId);
+						};
+						TimeMe.websocket.onopen = function () {
+							TimeMe.sendInitWsRequest(websocketOptions.appId);
+						}
+						TimeMe.websocket.onerror = function (error) {
+							if (console) {
+								console.log("Error occurred in websocket connection: " + error);
+							}
+						}
+						TimeMe.websocket.onmessage = function (event) {
+							if (console) {
+								console.log(event.data);
+							}
+						}						
+					} catch (error) {
+						if (console) {
+							console.error("Failed to connect to websocket host.  Error:" + error);
+						}						
+					}
 				}
+				return this;
 			},
+
 			websocketSend: function (data) {
 				TimeMe.websocket.send(JSON.stringify(data));
 			},
+
 			sendCurrentTime: function (appId) {
 				var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInMilliseconds();
 				var data = {
@@ -280,19 +292,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			initialize: function (options) {
 
-				var idleTimeoutInSeconds = 30;
-				var currentPageName = "default-page-name";
+				var idleTimeoutInSeconds = TimeMe.idleTimeoutMs || 30;
+				var currentPageName = TimeMe.currentPageName || "default-page-name";
 				var websocktOptions = undefined;
+
 				if (options) {
-					idleTimeoutInSeconds = options.idleTimeoutInSeconds || 30;
-					currentPageName = options.currentPageName || "default-page-name";
+					idleTimeoutInSeconds = options.idleTimeoutInSeconds || idleTimeoutInSeconds;
+					currentPageName = options.currentPageName || currentPageName;
 					websocktOptions = options.websocktOptions;
 				}
 
-				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds);
-				TimeMe.setCurrentPageName(currentPageName);
-				TimeMe.setUpWebsocket(websocktOptions);
-				TimeMe.listenForVisibilityEvents();
+				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)
+					  .setCurrentPageName(currentPageName)
+					  .setUpWebsocket(websocktOptions)
+				      .listenForVisibilityEvents();
 				TimeMe.startTimer();
 			}
 		};

@@ -1,17 +1,17 @@
 <h3>What is TimeMe.js?</h3>
 TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
-TimeMe.js disregards time spent on a web page if the user minimizes the browser or 
+It disregards time spent on a web page if the user minimizes the browser or 
 switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
 a user is being collected.  Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
 idle (no page mouse movement, no page keyboard input) for a customizable period of time,
-then TimeMe.js will automatically ignore this time.  This means no time will be reported
-where a web page is open but the user isn't actually interacting with it (such as when
-they temporarily leave the computer).  These components put together create a much more accurate
-representation of how long users are actually using a web page.
+then TimeMe.js will automatically ignore this time.  
 
-Furthermore - TimeMe tracks time usage across multiple pages.  This is particularly 
-useful when running a single page web application. You can get a list of all aggregate 
-times spent on all pages from TimeMe.js.
+This means no time will be reported where a web page is open but the user isn't actually interacting 
+with it (such as when they temporarily leave the computer).  These components put together create a 
+much more accurate representation of how long users are actually using a web page.
+
+Furthermore - TimeMe supports tracking time across multiple pages.  This is particularly 
+useful when running a single page web application.
 
 <h3>Demo</h3>
 You can see a demo of a timer using TimeMe.js 
@@ -65,7 +65,6 @@ Simply provide a few arguments to the initialize() method to enable it:<pre><cod
 	currentPageName: "my-home-page", // current page
 	idleTimeoutInSeconds: 30, // seconds 
 	websocktOptions: { // optional
-		enableWebsocketReporting: true,
 		websocketHost: "ws://your_host:your_port",
 		appId: "insert-your-made-up-app-id"
 	}
@@ -123,8 +122,7 @@ open the test files to execute the tests.
 <pre><code>TimeMe.initialize(options);
 // options.currentPageName // - Name of the page (home, about, etc.)
 // options.idleTimeoutInSeconds // - how much inactive time before user considered idle
-// options.websocktOptions: { 
-//   enableWebsocketReporting: true, // Turn on websocket reporting
+// options.websocktOptions: { // Turn on websocket reporting
 // 	 websocketHost: "ws://your_host:your_port",
 // 	 appId: "insert-your-made-up-app-id"
 // }</code></pre>

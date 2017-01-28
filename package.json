@@ -1,5 +1,5 @@
 {
-  "name": "timeme",
+  "name": "timeme.js",
   "version": "2.0.0",
   "description": "A utility to time how long a user interacts with a page, disregarding time spent on other tabs, minimized, or idle time.",
   "main": "timeme.js",

@@ -48,9 +48,23 @@ feature is to retrieve the time spent by the user on the current page:<br/><br/>
 TimeMe gives you a hook to execute a function after a user has been interacting with your
 page for a set period of time.  Simply call TimeMe.callAfterTimeElapsedInSeconds():
 <div class="code-block">
-<pre><code>	TimeMe.callAfterTimeElapsedInSeconds(15, function(){
+<pre><code>TimeMe.callAfterTimeElapsedInSeconds(15, function(){
 	console.log("The user has been using the page for 15 seconds! Let's prompt them with something.");
 });</code></pre>
+</div>
+TimeMe also lets you executed code when a user leaves the page (due to switching tabs, inactivity, etc.) and
+when he or she returns:
+<div class="code-block">
+<pre><code>// Executes the first 5 times a user leaves the page
+TimeMe.callWhenUserLeaves(function(){
+	console.log("The user is not currently viewing the page!");
+}, 5);
+
+// Executes every time a user returns
+TimeMe.callWhenUserReturns(function(){
+	console.log("The user has come back!");
+});
+</code></pre>
 </div>
 
 <h3>What do I do with the time I've tracked?</h3>
@@ -145,7 +159,16 @@ Retrieves the time spent (in seconds) on the indicated page.
 Sets up a handler that executes after the user has spent the specified time interacting with the page.
 <br/><br/>
 </div><br/>
-
+<div class="code-block">
+<pre><code>TimeMe.callWhenUserLeaves(callback, [[numberOfInvocations]]);</code></pre>
+Sets up a handler that executes when the user is no longer interacting with the page due to inactivity,
+switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.
+<br/><br/>
+<div class="code-block">
+<pre><code>TimeMe.callWhenUserReturns(callback, [[numberOfInvocations]]);</code></pre>
+Sets up a handler that executes when the user returns to the page after inactivity,
+switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.<br/><br/>
+</div><br/>
 <div class="code-block">
 <pre><code>TimeMe.setCurrentPageName(newPageName);</code></pre>
 Sets the page name to be associated with any future calls to timer. 

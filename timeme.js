@@ -39,7 +39,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			checkStateRateMs: 250,
 			idle: false,
 			currentPageName: "default-page-name",
-			callbacks: [],
+			timeElapsedCallbacks: [],
+			userLeftCallbacks: [],
+			userReturnCallbacks: [],
 
 			startTimer: function () {
 				var pageName = TimeMe.currentPageName;
@@ -159,14 +161,52 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			resetIdleCountdown: function () {
 				if (TimeMe.idle) {
-					TimeMe.startTimer();
+					TimeMe.triggerUserHasReturned();
 				}
 				TimeMe.idle = false;
 				TimeMe.currentIdleTimeMs = 0;
 			},
 
+			callWhenUserLeaves: function(callback, numberOfTimesToInvoke) {
+				this.userLeftCallbacks.push({
+					callback: callback,
+					numberOfTimesToInvoke: numberOfTimesToInvoke
+				})
+			},
+
+			callWhenUserReturns: function(callback, numberOfTimesToInvoke) {
+				this.userReturnCallbacks.push({
+					callback: callback,
+					numberOfTimesToInvoke: numberOfTimesToInvoke
+				})
+			},
+
+			triggerUserHasReturned: function() {
+				for(var i=0; i<this.userReturnCallbacks.length; i++) {
+					var userReturnedCallback = this.userReturnCallbacks[i];
+					var numberTimes = userReturnedCallback.numberOfTimesToInvoke;
+					if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
+						userReturnedCallback.callback();
+						userReturnedCallback.numberOfTimesToInvoke -= 1;
+					}
+				}				
+				TimeMe.startTimer();
+			},
+
+			triggerUserHasLeftPage: function() {
+				for(var i=0; i<this.userLeftCallbacks.length; i++) {
+					var userHasLeftCallback = this.userLeftCallbacks[i];
+					var numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
+					if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
+						userHasLeftCallback.callback();
+						userHasLeftCallback.numberOfTimesToInvoke -= 1;
+					}
+				}
+				TimeMe.stopTimer();
+			},			
+
 			callAfterTimeElapsedInSeconds: function(timeInSeconds, callback) {
-				TimeMe.callbacks.push({
+				TimeMe.timeElapsedCallbacks.push({
 					timeInSeconds: timeInSeconds,
 					callback: callback,
 					pending: true
@@ -174,16 +214,16 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			checkState: function () {
-				for(var i=0; i<TimeMe.callbacks.length; i++){
-					if (TimeMe.callbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.callbacks[i].timeInSeconds) {
-						TimeMe.callbacks[i].callback();
-						TimeMe.callbacks[i].pending = false;
+				for(var i=0; i<TimeMe.timeElapsedCallbacks.length; i++){
+					if (TimeMe.timeElapsedCallbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
+						TimeMe.timeElapsedCallbacks[i].callback();
+						TimeMe.timeElapsedCallbacks[i].pending = false;
 					}
 				}
 
 				if (TimeMe.idle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
 					TimeMe.idle = true;
-					TimeMe.stopTimer();
+					TimeMe.triggerUserHasLeftPage();
 				} else {
 					TimeMe.currentIdleTimeMs += TimeMe.checkStateRateMs;
 				}
@@ -210,18 +250,18 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 				document.addEventListener(TimeMe.visibilityChangeEventName, function () {
 					if (document[TimeMe.hiddenPropName]) {
-						TimeMe.stopTimer();
+						TimeMe.triggerUserHasLeftPage();
 					} else {
-						TimeMe.startTimer();
+						TimeMe.triggerUserHasReturned();
 					}
 				}, false);
 
 				window.addEventListener('blur', function() {
-					TimeMe.stopTimer();
+					TimeMe.triggerUserHasLeftPage();
 				});
 
 				window.addEventListener('focus', function() {
-					TimeMe.startTimer();
+					TimeMe.triggerUserHasReturned();
 				});				
 
 				document.addEventListener("mousemove", function () { TimeMe.resetIdleCountdown(); });

@@ -24,7 +24,7 @@ Alternatively, you can download the most recent copy at <a href="https://github.
 <h3>How do I use TimeMe.js?</h3>
 
 First, obtain a copy of timeme.js.  You can get both by installing TimeMe.js via Bower: <br/><br/>
-<div class="code-block"><pre><code>bower install timeme.js</pre></code></div><br/><br/>
+<div class="code-block"><pre><code>bower install timeme.js</pre></code></div><br/>
 Then, simply include the following lines of code in your page's head element: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="timeme.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
@@ -48,21 +48,39 @@ feature is to retrieve the time spent by the user on the current page:<br/><br/>
 TimeMe gives you a hook to execute a function after a user has been interacting with your
 page for a set period of time.  Simply call TimeMe.callAfterTimeElapsedInSeconds():
 <div class="code-block">
-	<pre><code>	TimeMe.callAfterTimeElapsedInSeconds(15, function(){
+<pre><code>	TimeMe.callAfterTimeElapsedInSeconds(15, function(){
 	console.log("The user has been using the page for 15 seconds! Let's prompt them with something.");
 });</code></pre>
 </div>
-<br/>
-In most cases you will want to store the time spent on a page for analytic purposes.  You will
-therefore need to send the time spent on a page to the server at some point!  
-You can hook into the window.onbeforeunload event to do so, which fires as the page is closing.
 
-Notice below that we use a synchronous request (not the usual asynchronous request) to guarantee
-the request to our server arrives before the page closes:<br/><br/>
+<h3>What do I do with the time I've tracked?</h3>
+
+In most cases you will want to store the time spent on a page for analytic purposes.  You will
+likely need to send the time spent on a page to a back-end server. 
+
+<h5>Using WebSockets to send times</h5>
+TimeMe.js has websocket reporting built into it.  It can send the time spent on a page to your
+websocket listening server when a user finishes their session. Simply provide a few arguments to the initialize()
+method to get started:<pre><code>TimeMe.initialize({
+	currentPageName: "my-home-page", // current page
+	idleTimeoutInSeconds: 30, // seconds 
+	websocktOptions: { // optional
+		enableWebsocketReporting: true,
+		websocketHost: "ws://your_host:your_port",
+		appId: "insert-your-made-up-app-id"
+	}
+});</code></pre>
+
+<h5>Using standard http requests to send time</h5>
+Alternatively you can issue an HTTP request to your back end server to report time.
+Note: the following example send the request during the the window.onbeforeunload event.
+This approach may not work in certain browsers as their is no guarantee that the http request
+will complete before the browser terminates it.  Consider sending the time at a certain polling period
+as an alternative.<br/><br/>
 <div class="code-block">
 <pre><code>window.onbeforeunload = function (event) {
 	xmlhttp=new XMLHttpRequest();
-	xmlhttp.open("POST","ENTER_URL_HERE",false);
+	xmlhttp.open("POST","ENTER_URL_HERE", true);
 	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
 	xmlhttp.send(timeSpentOnPage);
@@ -103,11 +121,11 @@ open the test files to execute the tests.
 <a name="API"></a>
 <h3>API</h3>
 <div class="code-block">
-<pre><code>TimeMe.initialize();</code></pre>
+<pre><code>TimeMe.initialize(options);</code></pre>
 Initializes the timer.  Should only be called when first importing the
 library and beginning to time page usage.  Pass in following options:
-<pre><code>currentPageName // - Name of the page (home, about, etc.)</code></pre>
-<pre><code>idleTimeoutInSeconds // - how much inactive time before user considered idle</code></pre>
+<pre><code>currentPageName // - Name of the page (home, about, etc.)
+idleTimeoutInSeconds // - how much inactive time before user considered idle</code></pre>
 <br/><br/>
 </div><br/>
 <div class="code-block">

@@ -346,7 +346,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (options) {
 					idleTimeoutInSeconds = options.idleTimeoutInSeconds || idleTimeoutInSeconds;
 					currentPageName = options.currentPageName || currentPageName;
-					websocktOptions = options.websocktOptions;
+					websocktOptions = options.websocketOptions;
 				}
 
 				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)

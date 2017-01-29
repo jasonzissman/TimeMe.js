@@ -341,17 +341,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 				var idleTimeoutInSeconds = TimeMe.idleTimeoutMs || 30;
 				var currentPageName = TimeMe.currentPageName || "default-page-name";
-				var websocktOptions = undefined;
+				var websocketOptions = undefined;
 
 				if (options) {
 					idleTimeoutInSeconds = options.idleTimeoutInSeconds || idleTimeoutInSeconds;
 					currentPageName = options.currentPageName || currentPageName;
-					websocktOptions = options.websocketOptions;
+					websocketOptions = options.websocketOptions;
 				}
 
 				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)
 					  .setCurrentPageName(currentPageName)
-					  .setUpWebsocket(websocktOptions)
+					  .setUpWebsocket(websocketOptions)
 				      .listenForVisibilityEvents();
 				TimeMe.startTimer();
 			}

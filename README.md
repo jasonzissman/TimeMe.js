@@ -79,7 +79,7 @@ websocket server.  TimeMe will end the connection and report the user's time whe
 Simply provide a few arguments to the initialize() method to enable it:<pre><code>TimeMe.initialize({
 	currentPageName: "my-home-page", // current page
 	idleTimeoutInSeconds: 30, // seconds 
-	websocktOptions: { // optional
+	websocketOptions: { // optional
 		websocketHost: "ws://your_host:your_port",
 		appId: "insert-your-made-up-app-id"
 	}
@@ -137,7 +137,7 @@ open the test files to execute the tests.
 <pre><code>TimeMe.initialize(options);
 // options.currentPageName // - Name of the page (home, about, etc.)
 // options.idleTimeoutInSeconds // - how much inactive time before user considered idle
-// options.websocktOptions: { // Turn on websocket reporting
+// options.websocketOptions: { // Turn on websocket reporting
 // 	 websocketHost: "ws://your_host:your_port",
 // 	 appId: "insert-your-made-up-app-id"
 // }</code></pre>

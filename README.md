@@ -1,3 +1,8 @@
+<h3>Shameless Plug - TimeMeJs.com</h3>
+I have recently launched an alpha service to help websites track how long
+users are really interacting with their pages.  The service is based on
+the TimeMe.js library, and can be found here: https://timemejs.com/.
+
 <h3>What is TimeMe.js?</h3>
 TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
 It disregards time spent on a web page if the user minimizes the browser or 

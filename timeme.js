@@ -32,9 +32,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			return root.TimeMe = factory();
 		}
 	})(this, function () {
+		
 		var TimeMe = {
+		
 			startStopTimes: {},
-			idleTimeoutMs: 60 * 1000,
+			idleTimeoutMs: 30 * 1000,
 			currentIdleTimeMs: 0,
 			checkStateRateMs: 250,			
 			active: false,
@@ -44,7 +46,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			userLeftCallbacks: [],
 			userReturnCallbacks: [],
 
-			// TODO - flesh this out - how do we track idle time?
 			trackTimeOnElement: function(elementId) {
 				var element = document.getElementById(elementId);
 				if (element) {
@@ -89,6 +90,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					"stopTime": undefined
 				});
 				TimeMe.active = true;
+			},
+
+			stopAllTimers: function() {
+				var pageNames = Object.keys(TimeMe.startStopTimes);
+				for(var i=0; i<pageNames.length; i++) {
+					TimeMe.stopTimer(pageNames[i]);
+				}				
 			},
 
 			stopTimer: function (pageName) {
@@ -238,7 +246,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						}
 					}
 				}
-				TimeMe.stopTimer();
+				TimeMe.stopAllTimers();
 			},			
 
 			callAfterTimeElapsedInSeconds: function(timeInSeconds, callback) {
@@ -382,6 +390,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					  .setCurrentPageName(currentPageName)
 					  .setUpWebsocket(websocketOptions)
 				      .listenForVisibilityEvents();
+
 				TimeMe.startTimer();
 			}
 		};

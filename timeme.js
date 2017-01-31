@@ -52,6 +52,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					element.addEventListener("mouseover", function () {
 						TimeMe.startTimer(elementId);
 					});
+					element.addEventListener("mousemove", function () {
+						TimeMe.startTimer(elementId);
+					});					
 					element.addEventListener("mouseleave", function () {
 						TimeMe.stopTimer(elementId);
 					});

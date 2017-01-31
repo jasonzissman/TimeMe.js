@@ -44,6 +44,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			userLeftCallbacks: [],
 			userReturnCallbacks: [],
 
+
+			trackTimeOnElement: function(elementId) {
+				// TODO - finish this
+			},
+
+			getTimeOnElementInSeconds: function (elementId) {
+				// TODO - finish this
+				return 134;
+			},
+
+
 			startTimer: function () {
 				var pageName = TimeMe.currentPageName;
 

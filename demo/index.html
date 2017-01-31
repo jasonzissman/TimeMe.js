@@ -21,10 +21,15 @@
 				console.log("The user has been using the page for 9 seconds! Let's prompt them with something.");
 			});
 
+			TimeMe.trackTimeOnElement('area-of-interest-time');
+
 			window.onload = function(){
 				setInterval(function(){
 					var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
 					document.getElementById('timeInSeconds').textContent = timeSpentOnPage.toFixed(2);
+
+					var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-time');
+					document.getElementById('area-of-interest-time').textContent = timeSpentOnElement.toFixed(2);
 				}, 25);
 			}
 		</script>
@@ -98,9 +103,28 @@
 			<div class="code-block">
 				<pre><code>var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();</code></pre>
 			</div><br/>
+			
+			<h3>Tracking specific elements</h3>
+			TimeMe allows you to track how users are interacting <i>with specific elements</i> on
+			your page.
+
+			<div class="area-of-interest">
+				Interact with this element<br/>
+				<input type="text" placeholder="Enter some data" />
+			</div>
+
+			You have interacted with this element for <span id="area-of-interest-time"></span> seconds.
+
+			<h3>What do I do with my recorded time?</h3>
 			In most cases you will want to store the time spent on a page for analytic purposes.  You will
 			therefore need to send the time spent on a page to the server at some point!  When is
-			the best time to do this?  You can hook into the window.onbeforeunload event to do so.
+			the best time to do this?
+			<h4>User TimeMeJS.com</h4>
+			<i>Shameless Plug</i> - I wrote <a href="https://timemejs.com">TimeMeJS.com</a>,
+			 a webservice that records your times for you.  Instead of tracking the times yourself
+			 and divining meaningful conclusions, you can let us do it for you.
+			<h4>Alternatively, store it yourself</h4>
+			You can hook into the window.onbeforeunload event to record your times yourself.
 			In most browsers this method is fired during a page's shut-down routine.
 			Notice below that we use a synchronous request (not the usual asynchronous request) to guarantee
 			the request to our server arrives before the page closes:<br/><br/>

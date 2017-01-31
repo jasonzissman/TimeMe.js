@@ -27,3 +27,14 @@ body {
 	border: 2px solid #e8e8e8;
 	padding-left: 10px;
 }
+.area-of-interest {
+	margin-top: 1em;
+	padding: 2em;
+	border-radius: 4px;
+	border: 1px solid black;
+	font-size: x-large;
+}
+.area-of-interest input {
+	margin-top: 5px;
+	font-size: x-large !important;
+}

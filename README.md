@@ -7,27 +7,25 @@ the TimeMe.js library, and can be found here: https://timemejs.com/.
 TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
 It disregards time spent on a web page if the user minimizes the browser or 
 switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
-a user is being collected.  Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
+a user is being collected.  Multiple timers can be set up to track both page time as well as
+time interacting with specific elements.
+
+Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
 idle (no page mouse movement, no page keyboard input) for a customizable period of time,
-then TimeMe.js will automatically ignore this time.  
+then TimeMe.js will automatically ignore this time. This means no time will be reported where a web page 
+is open but the user isn't actually interacting with it (such as when they temporarily leave the computer).  
 
-This means no time will be reported where a web page is open but the user isn't actually interacting 
-with it (such as when they temporarily leave the computer).  These components put together create a 
-much more accurate representation of how long users are actually using a web page.
+Furthermore - TimeMe supports tracking time for specific elements within a page.  This means you
+can track and compare usage of different parts of the same web page.
 
-Furthermore - TimeMe supports tracking time across multiple pages.  This is particularly 
-useful when running a single page web application.
+These components put together create a much more accurate representation of how 
+long users are actually using a web page.
 
 <h3>Demo</h3>
-You can see a demo of a timer using TimeMe.js 
+You can see a demo of TimeMe.js 
 <a target="_blank" href="http://jasonzissman.com/timeme/index.html">here</a>.
 
-<h3>Where do I get TimeMe.js?</h3>
-You can use Bower to install TimeMe (see next steps) and its dependencies.
-Alternatively, you can download the most recent copy at <a href="https://github.com/jasonzissman/TimeMe.js">the TimeMe Github project</a>.
-
 <h3>How do I use TimeMe.js?</h3>
-
 First, obtain a copy of timeme.js.  You can do so by installing TimeMe.js via npm or Bower: <br/><br/>
 <div class="code-block"><pre><code>npm install timeme.js --save
 bower install timeme.js</pre></code></div><br/>
@@ -44,8 +42,11 @@ Notice that the code sets the idle duration to 30 seconds, which means 30 second
 inactivity (no mouse or keyboard usage on the page) will stop the timer.  Also,
 we define a page name (my-home-page) to associate with the current timer.
 <br/><br/>
-Once imported and initialized, we can call the various methods made available
-by TimeMe.js.  See the <a href="#API">API documentation</a> below for
+<b>Note</b>: You can time any activity that you want, not just page time.  Simply call TimeMe.startTimer(activityName)
+and TimeMe.stopTimer(activityName) where appropriate.  TimeMe will automatically discount any 
+idle or inactive time.
+<br/><br/>
+See the <a href="#API">API documentation</a> below for
 a complete breakdown of all of the available functionality.  The most basic
 feature is to retrieve the time spent by the user on the current page:<br/><br/>
 <div class="code-block">
@@ -70,6 +71,17 @@ TimeMe.callWhenUserLeaves(function(){
 TimeMe.callWhenUserReturns(function(){
 	console.log("The user has come back!");
 });
+</code></pre>
+</div>
+TimeMe also lets you track how long users are interacting with specific elements.  If the user moves
+their mouse over, clicks, or types on an element (or its children), TimeMe will begin tracking that
+interaction.  Multiple timers can run concurrently, so this does not impact other times that you've already
+set up.
+<div class="code-block">
+<pre><code>// Start tracking activity on element with id 'area-of-interest-1'
+TimeMe.trackTimeOnElement('area-of-interest-1');
+// some time later...
+var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
 </code></pre>
 </div>
 

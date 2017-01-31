@@ -7,29 +7,29 @@ the TimeMe.js library, and can be found here: https://timemejs.com/.
 TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
 It disregards time spent on a web page if the user minimizes the browser or 
 switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
-a user is being collected.  Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
+a user is being collected. 
+
+Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
 idle (no page mouse movement, no page keyboard input) for a customizable period of time,
-then TimeMe.js will automatically ignore this time.  
+then TimeMe.js will automatically ignore this time. This means no time will be reported where a web page 
+is open but the user isn't actually interacting with it (such as when they temporarily leave the computer).  
 
-This means no time will be reported where a web page is open but the user isn't actually interacting 
-with it (such as when they temporarily leave the computer).  These components put together create a 
-much more accurate representation of how long users are actually using a web page.
+Furthermore - TimeMe supports tracking time for specific elements within a page.  This means you
+can track and compare usage of different parts of the same web page.  Multiple concurrent timers
+are supported.
 
-Furthermore - TimeMe supports tracking time across multiple pages.  This is particularly 
-useful when running a single page web application.
+These components put together create a much more accurate representation of how 
+long users are actually using a web page.
 
 <h3>Demo</h3>
-You can see a demo of a timer using TimeMe.js 
+You can see a demo of TimeMe.js 
 <a target="_blank" href="http://jasonzissman.com/timeme/index.html">here</a>.
 
-<h3>Where do I get TimeMe.js?</h3>
-You can use Bower to install TimeMe (see next steps) and its dependencies.
-Alternatively, you can download the most recent copy at <a href="https://github.com/jasonzissman/TimeMe.js">the TimeMe Github project</a>.
-
 <h3>How do I use TimeMe.js?</h3>
-
-First, obtain a copy of timeme.js.  You can do so by installing TimeMe.js via npm or Bower: <br/><br/>
-<div class="code-block"><pre><code>npm install timeme.js --save
+First, obtain a copy of timeme.js.  You can do so by pulling from our website 
+or installing TimeMe.js via npm or Bower: <br/><br/>
+<div class="code-block"><pre><code>// https://timemejs.com/timeme.min.js
+npm install timeme.js --save
 bower install timeme.js</pre></code></div><br/>
 Then, simply include the following lines of code in your page's head element: <br/><br/>
 <div class="code-block"><pre><code>&lt;script src="timeme.js"&gt;&lt;/script&gt;
@@ -44,8 +44,15 @@ Notice that the code sets the idle duration to 30 seconds, which means 30 second
 inactivity (no mouse or keyboard usage on the page) will stop the timer.  Also,
 we define a page name (my-home-page) to associate with the current timer.
 <br/><br/>
-Once imported and initialized, we can call the various methods made available
-by TimeMe.js.  See the <a href="#API">API documentation</a> below for
+<b>Note</b>: You can time any activity that you want, not just page time.  Simply call the following code.
+TimeMe will automatically discount any idle or inactive time.
+<div class="code-block"><pre><code>TimeMe.startTimer("my-activity");
+// ... some time later
+TimeMe.stopTimer("my-activity");
+var timeOnActivity = TimeMe.getTimeOnPageInSeconds("my-activity")</code></pre>
+</div><br/>
+<br/><br/>
+See the <a href="#API">API documentation</a> below for
 a complete breakdown of all of the available functionality.  The most basic
 feature is to retrieve the time spent by the user on the current page:<br/><br/>
 <div class="code-block">
@@ -70,6 +77,17 @@ TimeMe.callWhenUserLeaves(function(){
 TimeMe.callWhenUserReturns(function(){
 	console.log("The user has come back!");
 });
+</code></pre>
+</div>
+TimeMe also lets you track how long users are interacting with specific elements.  If the user moves
+their mouse over, clicks, or types on an element (or its children), TimeMe will begin tracking that
+interaction.  Multiple timers can run concurrently, so this does not impact other times that you've already
+set up.
+<div class="code-block">
+<pre><code>// Start tracking activity on element with id 'area-of-interest-1'
+TimeMe.trackTimeOnElement('area-of-interest-1');
+// some time later...
+var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
 </code></pre>
 </div>
 
@@ -126,7 +144,7 @@ time spent on that page.
 </div>		
 <div>
 <h3>What browsers are supported?</h3>
-Chrome, Firefox, Safari, and IE 8+.
+All major desktop and mobile browsers.
 </div>
 <div>
 <h3>How do I run the unit tests?</h3>		
@@ -174,6 +192,15 @@ switching tabs, or switching apps.  You can optionally provide numberOfInvocatio
 <pre><code>TimeMe.callWhenUserReturns(callback, [[numberOfInvocations]]);</code></pre>
 Sets up a handler that executes when the user returns to the page after inactivity,
 switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.<br/><br/>
+</div><br/>
+<div class="code-block">
+<pre><code>TimeMe.trackTimeOnElement(elementId);</code></pre>
+Start timing all user activity on a certain element.  A timer will be created that tracks how long
+the user typed, clicked, moused over, or otherwised focused on this element.<br/><br/>
+</div><br/>
+<div class="code-block">
+<pre><code>TimeMe.getTimeOnElementInSeconds(elementId);</code></pre>
+Retrieve the time spent by a user on a specific element.<br/><br/>
 </div><br/>
 <div class="code-block">
 <pre><code>TimeMe.setCurrentPageName(newPageName);</code></pre>

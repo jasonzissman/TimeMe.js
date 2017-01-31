@@ -32,11 +32,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			return root.TimeMe = factory();
 		}
 	})(this, function () {
+
 		var TimeMe = {
+
 			startStopTimes: {},
-			idleTimeoutMs: 60 * 1000,
+			idleTimeoutMs: 30 * 1000,
 			currentIdleTimeMs: 0,
-			checkStateRateMs: 250,			
+			checkStateRateMs: 250,
 			active: false,
 			idle: false,
 			currentPageName: "default-page-name",
@@ -44,8 +46,40 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			userLeftCallbacks: [],
 			userReturnCallbacks: [],
 
-			startTimer: function () {
-				var pageName = TimeMe.currentPageName;
+			trackTimeOnElement: function (elementId) {
+				var element = document.getElementById(elementId);
+				if (element) {
+					element.addEventListener("mouseover", function () {
+						TimeMe.startTimer(elementId);
+					});
+					element.addEventListener("mousemove", function () {
+						TimeMe.startTimer(elementId);
+					});					
+					element.addEventListener("mouseleave", function () {
+						TimeMe.stopTimer(elementId);
+					});
+					element.addEventListener("keypress", function () {
+						TimeMe.startTimer(elementId);
+					});
+					element.addEventListener("focus", function () {
+						TimeMe.startTimer(elementId);
+					});
+				}
+			},
+
+			getTimeOnElementInSeconds: function (elementId) {
+				var time = TimeMe.getTimeOnPageInSeconds(elementId);
+				if (time) {
+					return time;
+				} else {
+					return 0;
+				}
+			},
+
+			startTimer: function (pageName) {
+				if (!pageName) {
+					pageName = TimeMe.currentPageName;
+				}
 
 				if (TimeMe.startStopTimes[pageName] === undefined) {
 					TimeMe.startStopTimes[pageName] = [];
@@ -64,8 +98,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.active = true;
 			},
 
-			stopTimer: function () {
-				var pageName = TimeMe.currentPageName;
+			stopAllTimers: function () {
+				var pageNames = Object.keys(TimeMe.startStopTimes);
+				for (var i = 0; i < pageNames.length; i++) {
+					TimeMe.stopTimer(pageNames[i]);
+				}
+			},
+
+			stopTimer: function (pageName) {
+				if (!pageName) {
+					pageName = TimeMe.currentPageName;
+				}
 				var arrayOfTimes = TimeMe.startStopTimes[pageName];
 				if (arrayOfTimes === undefined || arrayOfTimes.length === 0) {
 					// Can't stop timer before you've started it.
@@ -170,49 +213,49 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.currentIdleTimeMs = 0;
 			},
 
-			callWhenUserLeaves: function(callback, numberOfTimesToInvoke) {
+			callWhenUserLeaves: function (callback, numberOfTimesToInvoke) {
 				this.userLeftCallbacks.push({
 					callback: callback,
 					numberOfTimesToInvoke: numberOfTimesToInvoke
 				})
 			},
 
-			callWhenUserReturns: function(callback, numberOfTimesToInvoke) {
+			callWhenUserReturns: function (callback, numberOfTimesToInvoke) {
 				this.userReturnCallbacks.push({
 					callback: callback,
 					numberOfTimesToInvoke: numberOfTimesToInvoke
 				})
 			},
 
-			triggerUserHasReturned: function() {
+			triggerUserHasReturned: function () {
 				if (!TimeMe.active) {
-					for(var i=0; i<this.userReturnCallbacks.length; i++) {
+					for (var i = 0; i < this.userReturnCallbacks.length; i++) {
 						var userReturnedCallback = this.userReturnCallbacks[i];
 						var numberTimes = userReturnedCallback.numberOfTimesToInvoke;
-						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
+						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0) {
 							userReturnedCallback.numberOfTimesToInvoke -= 1;
 							userReturnedCallback.callback();
 						}
-					}				
+					}
 				}
 				TimeMe.startTimer();
 			},
 
-			triggerUserHasLeftPage: function() {
+			triggerUserHasLeftPage: function () {
 				if (TimeMe.active) {
-					for(var i=0; i<this.userLeftCallbacks.length; i++) {
+					for (var i = 0; i < this.userLeftCallbacks.length; i++) {
 						var userHasLeftCallback = this.userLeftCallbacks[i];
 						var numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
-						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0 ) {
+						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0) {
 							userHasLeftCallback.numberOfTimesToInvoke -= 1;
 							userHasLeftCallback.callback();
 						}
 					}
 				}
-				TimeMe.stopTimer();
-			},			
+				TimeMe.stopAllTimers();
+			},
 
-			callAfterTimeElapsedInSeconds: function(timeInSeconds, callback) {
+			callAfterTimeElapsedInSeconds: function (timeInSeconds, callback) {
 				TimeMe.timeElapsedCallbacks.push({
 					timeInSeconds: timeInSeconds,
 					callback: callback,
@@ -221,7 +264,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			checkState: function () {
-				for(var i=0; i<TimeMe.timeElapsedCallbacks.length; i++){
+				for (var i = 0; i < TimeMe.timeElapsedCallbacks.length; i++) {
 					if (TimeMe.timeElapsedCallbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
 						TimeMe.timeElapsedCallbacks[i].callback();
 						TimeMe.timeElapsedCallbacks[i].pending = false;
@@ -263,13 +306,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					}
 				}, false);
 
-				window.addEventListener('blur', function() {
+				window.addEventListener('blur', function () {
 					TimeMe.triggerUserHasLeftPage();
 				});
 
-				window.addEventListener('focus', function() {
+				window.addEventListener('focus', function () {
 					TimeMe.triggerUserHasReturned();
-				});				
+				});
 
 				document.addEventListener("mousemove", function () { TimeMe.resetIdleCountdown(); });
 				document.addEventListener("keyup", function () { TimeMe.resetIdleCountdown(); });
@@ -305,11 +348,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 							if (console) {
 								console.log(event.data);
 							}
-						}						
+						}
 					} catch (error) {
 						if (console) {
 							console.error("Failed to connect to websocket host.  Error:" + error);
-						}						
+						}
 					}
 				}
 				return this;
@@ -350,9 +393,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 
 				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)
-					  .setCurrentPageName(currentPageName)
-					  .setUpWebsocket(websocketOptions)
-				      .listenForVisibilityEvents();
+					.setCurrentPageName(currentPageName)
+					.setUpWebsocket(websocketOptions)
+					.listenForVisibilityEvents();
+
 				TimeMe.startTimer();
 			}
 		};

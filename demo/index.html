@@ -2,7 +2,7 @@
 	<head>
 		<title>Page Visibility Test</title>
 		<link rel="stylesheet" type="text/css" href="index.css">
-		<script src="../timeme.min.js"></script>
+		<script src="../timeme.js"></script>
 		<script type="text/javascript">
 			TimeMe.initialize({
 				currentPageName: "my-home-page", // current page
@@ -21,14 +21,14 @@
 				console.log("The user has been using the page for 9 seconds! Let's prompt them with something.");
 			});
 
-			TimeMe.trackTimeOnElement('area-of-interest-time');
 
 			window.onload = function(){
+				TimeMe.trackTimeOnElement('area-of-interest');
 				setInterval(function(){
 					var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
 					document.getElementById('timeInSeconds').textContent = timeSpentOnPage.toFixed(2);
 
-					var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-time');
+					var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest');
 					document.getElementById('area-of-interest-time').textContent = timeSpentOnElement.toFixed(2);
 				}, 25);
 			}
@@ -108,7 +108,7 @@
 			TimeMe allows you to track how users are interacting <i>with specific elements</i> on
 			your page.
 
-			<div class="area-of-interest">
+			<div class="area-of-interest" id="area-of-interest">
 				Interact with this element<br/>
 				<input type="text" placeholder="Enter some data" />
 			</div>

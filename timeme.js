@@ -44,19 +44,35 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			userLeftCallbacks: [],
 			userReturnCallbacks: [],
 
-
+			// TODO - flesh this out - how do we track idle time?
 			trackTimeOnElement: function(elementId) {
-				// TODO - finish this
+				var element = document.getElementById(elementId);
+				if (element) {
+					element.addEventListener("mouseover", function() {
+						TimeMe.startTimer(elementId);
+					});
+					element.addEventListener("mouseleave", function() {
+						TimeMe.stopTimer(elementId);
+					});
+					element.addEventListener("keypress", function() {
+						TimeMe.startTimer(elementId);
+					});
+				}
 			},
 
 			getTimeOnElementInSeconds: function (elementId) {
-				// TODO - finish this
-				return 134;
+				var time = TimeMe.getTimeOnPageInSeconds(elementId);
+				if (time) {
+					return time;
+				} else {
+					return 0;
+				}
 			},
 
-
-			startTimer: function () {
-				var pageName = TimeMe.currentPageName;
+			startTimer: function (pageName) {
+				if (!pageName) {
+					pageName = TimeMe.currentPageName;
+				}
 
 				if (TimeMe.startStopTimes[pageName] === undefined) {
 					TimeMe.startStopTimes[pageName] = [];
@@ -75,8 +91,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.active = true;
 			},
 
-			stopTimer: function () {
-				var pageName = TimeMe.currentPageName;
+			stopTimer: function (pageName) {
+				if (!pageName) {
+					pageName = TimeMe.currentPageName;
+				}
 				var arrayOfTimes = TimeMe.startStopTimes[pageName];
 				if (arrayOfTimes === undefined || arrayOfTimes.length === 0) {
 					// Can't stop timer before you've started it.

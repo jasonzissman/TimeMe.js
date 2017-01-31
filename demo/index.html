@@ -23,13 +23,17 @@
 
 
 			window.onload = function(){
-				TimeMe.trackTimeOnElement('area-of-interest');
+				TimeMe.trackTimeOnElement('area-of-interest-1');
+				TimeMe.trackTimeOnElement('area-of-interest-2');
 				setInterval(function(){
 					var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
 					document.getElementById('timeInSeconds').textContent = timeSpentOnPage.toFixed(2);
 
-					var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest');
-					document.getElementById('area-of-interest-time').textContent = timeSpentOnElement.toFixed(2);
+					var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
+					document.getElementById('area-of-interest-time-1').textContent = timeSpentOnElement.toFixed(2);
+
+					var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-2');
+					document.getElementById('area-of-interest-time-2').textContent = timeSpentOnElement.toFixed(2);
 				}, 25);
 			}
 		</script>
@@ -108,12 +112,19 @@
 			TimeMe allows you to track how users are interacting <i>with specific elements</i> on
 			your page.
 
-			<div class="area-of-interest" id="area-of-interest">
+			<br/>
+
+			<div class="area-of-interest" id="area-of-interest-1">
 				Interact with this element<br/>
-				<input type="text" placeholder="Enter some data" />
+				<input type="text" placeholder="Enter some data" /><br/><br/>
+				Interaction: <span id="area-of-interest-time-1"></span> seconds.
 			</div>
 
-			You have interacted with this element for <span id="area-of-interest-time"></span> seconds.
+			<div class="area-of-interest" id="area-of-interest-2">
+				Interact with this element<br/>
+				<input type="text" placeholder="Enter some data" /><br/><br/>
+				Interaction: <span id="area-of-interest-time-2"></span> seconds.
+			</div>
 
 			<h3>What do I do with my recorded time?</h3>
 			In most cases you will want to store the time spent on a page for analytic purposes.  You will

@@ -287,7 +287,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (typeof document.hidden !== "undefined") {
 					TimeMe.hiddenPropName = "hidden";
 					TimeMe.visibilityChangeEventName = "visibilitychange";
-				} else if (doc && typeof doc.mozHidden !== "undefined") {
+				} else if (typeof doc !== "undefined" && typeof doc.mozHidden !== "undefined") {
 					TimeMe.hiddenPropName = "mozHidden";
 					TimeMe.visibilityChangeEventName = "mozvisibilitychange";
 				} else if (typeof document.msHidden !== "undefined") {

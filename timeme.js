@@ -54,7 +54,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					});
 					element.addEventListener("mousemove", function () {
 						TimeMe.startTimer(elementId);
-					});					
+					});
 					element.addEventListener("mouseleave", function () {
 						TimeMe.stopTimer(elementId);
 					});
@@ -287,7 +287,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (typeof document.hidden !== "undefined") {
 					TimeMe.hiddenPropName = "hidden";
 					TimeMe.visibilityChangeEventName = "visibilitychange";
-				} else if (typeof doc.mozHidden !== "undefined") {
+				} else if (doc && typeof doc.mozHidden !== "undefined") {
 					TimeMe.hiddenPropName = "mozHidden";
 					TimeMe.visibilityChangeEventName = "mozvisibilitychange";
 				} else if (typeof document.msHidden !== "undefined") {

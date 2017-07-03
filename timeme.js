@@ -287,7 +287,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (typeof document.hidden !== "undefined") {
 					TimeMe.hiddenPropName = "hidden";
 					TimeMe.visibilityChangeEventName = "visibilitychange";
-				} else if (typeof doc.mozHidden !== "undefined") {
+				} else if (typeof document.mozHidden !== "undefined") {
 					TimeMe.hiddenPropName = "mozHidden";
 					TimeMe.visibilityChangeEventName = "mozvisibilitychange";
 				} else if (typeof document.msHidden !== "undefined") {
@@ -396,6 +396,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					.setCurrentPageName(currentPageName)
 					.setUpWebsocket(websocketOptions)
 					.listenForVisibilityEvents();
+
+				// TODO - only do this if page currently visible.
 
 				TimeMe.startTimer();
 			}

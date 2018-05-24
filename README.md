@@ -16,14 +16,10 @@ are supported.
 These components put together create a much more accurate representation of how 
 long users are actually using a web page.
 
-<h3>Demo</h3>
-You can see a demo of TimeMe.js 
-<a target="_blank" href="http://timemejs.com/">here</a>.
-
 <h3>How do I use TimeMe.js?</h3>
 First, obtain a copy of timeme.js.  You can do so by pulling from our website 
 or installing TimeMe.js via npm or Bower: <br/><br/>
-<div class="code-block"><pre><code>// http://timemejs.com/timeme.min.js
+<div class="code-block"><pre><code>
 npm install timeme.js --save
 bower install timeme.js</pre></code></div><br/>
 Then, simply include the following lines of code in your page's head element: <br/><br/>
@@ -120,7 +116,6 @@ will complete before the browser terminates it.<br/><br/>
 Using 'onbeforeunload' is by no means a requirement.  You can hook into any other event
 or logical point in your application to send the time spent information to the server.
 <br/><br/>
-If using a Single Page Application (SPA) design, TimeMe.js can have its timer stopped,
 page name switched, and the timer resumed (for the new page) with the following calls:<br/><br/>
 <div class="code-block">
 <pre><code>TimeMe.stopTimer();

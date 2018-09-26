@@ -16,10 +16,6 @@ are supported.
 These components put together create a much more accurate representation of how 
 long users are actually using a web page.
 
-<h3>Demo</h3>
-You can see a demo of TimeMe.js 
-<a target="_blank" href="http://timemejs.com/">here</a>.
-
 <h3>How do I use TimeMe.js?</h3>
 First, obtain a copy of timeme.js.  You can do so by pulling from our website 
 or installing TimeMe.js via npm or Bower: <br/><br/>

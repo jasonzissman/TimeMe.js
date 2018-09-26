@@ -76,7 +76,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 
-			startTimer: function (pageName) {
+			startTimer: function (pageName, startTime) {
 				if (!pageName) {
 					pageName = TimeMe.currentPageName;
 				}
@@ -92,7 +92,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					}
 				}
 				TimeMe.startStopTimes[pageName].push({
-					"startTime": new Date(),
+					"startTime": startTime || new Date(),
 					"stopTime": undefined
 				});
 				TimeMe.active = true;
@@ -385,11 +385,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				var idleTimeoutInSeconds = TimeMe.idleTimeoutMs || 30;
 				var currentPageName = TimeMe.currentPageName || "default-page-name";
 				var websocketOptions = undefined;
+				var initialStartTime = undefined;
 
 				if (options) {
 					idleTimeoutInSeconds = options.idleTimeoutInSeconds || idleTimeoutInSeconds;
 					currentPageName = options.currentPageName || currentPageName;
 					websocketOptions = options.websocketOptions;
+					initialStartTime = options.initialStartTime;
 				}
 
 				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)
@@ -399,7 +401,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 				// TODO - only do this if page currently visible.
 
-				TimeMe.startTimer();
+				TimeMe.startTimer(undefined, initialStartTime);
 			}
 		};
 		return TimeMe;

@@ -405,7 +405,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				document.removeEventListener("mousemove", TimeMe.resetIdleCountdown);
 				document.removeEventListener("keyup", TimeMe.resetIdleCountdown);
 				document.removeEventListener("touchstart", TimeMe.resetIdleCountdown);
-				document.removeEventListener(TimeMe.visibilityChangeEventName, TimeMe.visibilityChangeHandler);
+				document.removeEventListener(TimeMe.visibilityChangeEventName, TimeMe.visibilityChangeHandler, false);
 				window.removeEventListener("scroll", TimeMe.resetIdleCountdown);
 				window.removeEventListener('blur', TimeMe.triggerUserHasLeftPage);
 				window.removeEventListener('focus', TimeMe.triggerUserHasReturned);

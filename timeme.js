@@ -279,6 +279,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 
+			visibilityChangeHandler: function () {
+				if (document[TimeMe.hiddenPropName]) {
+					TimeMe.triggerUserHasLeftPage();
+				} else {
+					TimeMe.triggerUserHasReturned();
+				}
+			},
+
 			visibilityChangeEventName: undefined,
 			hiddenPropName: undefined,
 
@@ -298,28 +306,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					TimeMe.visibilityChangeEventName = "webkitvisibilitychange";
 				}
 
-				document.addEventListener(TimeMe.visibilityChangeEventName, function () {
-					if (document[TimeMe.hiddenPropName]) {
-						TimeMe.triggerUserHasLeftPage();
-					} else {
-						TimeMe.triggerUserHasReturned();
-					}
-				}, false);
+				document.addEventListener(TimeMe.visibilityChangeEventName, TimeMe.visibilityChangeHandler, false);
 
-				window.addEventListener('blur', function () {
-					TimeMe.triggerUserHasLeftPage();
-				});
+				window.addEventListener('blur', TimeMe.triggerUserHasLeftPage);
+				window.addEventListener('focus', TimeMe.triggerUserHasReturned);
 
-				window.addEventListener('focus', function () {
-					TimeMe.triggerUserHasReturned();
-				});
+				document.addEventListener("mousemove", TimeMe.resetIdleCountdown);
+				document.addEventListener("keyup", TimeMe.resetIdleCountdown);
+				document.addEventListener("touchstart", TimeMe.resetIdleCountdown);
+				window.addEventListener("scroll", TimeMe.resetIdleCountdown);
 
-				document.addEventListener("mousemove", function () { TimeMe.resetIdleCountdown(); });
-				document.addEventListener("keyup", function () { TimeMe.resetIdleCountdown(); });
-				document.addEventListener("touchstart", function () { TimeMe.resetIdleCountdown(); });
-				window.addEventListener("scroll", function () { TimeMe.resetIdleCountdown(); });
-
-				setInterval(function () {
+				TimeMe.checkStateIntervalId = setInterval(function () {
 					TimeMe.checkState();
 				}, TimeMe.checkStateRateMs);
 			},
@@ -398,8 +395,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					.listenForVisibilityEvents();
 
 				// TODO - only do this if page currently visible.
-
 				TimeMe.startTimer();
+			},
+
+			destroy: function () {
+				if (TimeMe.checkStateIntervalId) {
+					clearInterval(TimeMe.checkStateIntervalId);
+				}
+				document.removeEventListener("mousemove", TimeMe.resetIdleCountdown);
+				document.removeEventListener("keyup", TimeMe.resetIdleCountdown);
+				document.removeEventListener("touchstart", TimeMe.resetIdleCountdown);
+				document.removeEventListener(TimeMe.visibilityChangeEventName, TimeMe.visibilityChangeHandler, false);
+				window.removeEventListener("scroll", TimeMe.resetIdleCountdown);
+				window.removeEventListener('blur', TimeMe.triggerUserHasLeftPage);
+				window.removeEventListener('focus', TimeMe.triggerUserHasReturned);
 			}
 		};
 		return TimeMe;

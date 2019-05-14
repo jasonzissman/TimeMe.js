@@ -68,9 +68,18 @@ QUnit.test("startTimer() is ignored the second time when called twice without st
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
 	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
-	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped.");
-	assert.ok(actualTime >= 0, "Should be greater than or equal to 0.");
+	assert.ok(actualTime, "Should record time based on initialized point");
 });
+
+QUnit.test("startTimer() can accept an initialized startTime", function (assert) {
+	var initTime = new Date() - 10000;
+	TimeMe.startTimer(undefined, initTime);
+	TimeMe.stopTimer();
+	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped.");
+	assert.ok(actualTime >= 10, "Should be greater than or equal to 10.");
+});
+
 
 QUnit.test("stopTimer() is ignored the second time when called twice without stopping.", function (assert) {
 	TimeMe.startTimer();

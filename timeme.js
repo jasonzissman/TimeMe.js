@@ -54,7 +54,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					});
 					element.addEventListener("mousemove", function () {
 						TimeMe.startTimer(elementId);
-					});					
+					});
 					element.addEventListener("mouseleave", function () {
 						TimeMe.stopTimer(elementId);
 					});
@@ -331,8 +331,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			setUpWebsocket: function (websocketOptions) {
 				if (window.WebSocket && websocketOptions) {
 					var websocketHost = websocketOptions.websocketHost; // "ws://hostname:port"
+					var websocketOptions = websocketOptions.websocketOptions;
 					try {
-						TimeMe.websocket = new WebSocket(websocketHost);
+						TimeMe.websocket = new WebSocket(websocketHost, websocketOptions);
 						window.onbeforeunload = function (event) {
 							TimeMe.sendCurrentTime(websocketOptions.appId);
 						};

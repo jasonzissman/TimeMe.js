@@ -68,8 +68,35 @@ QUnit.test("startTimer() is ignored the second time when called twice without st
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
 	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	assert.ok(actualTime >= 0, "Should record time based on initialized point");
+});
+
+QUnit.test("startTimer() can accept an initialized startTime", function (assert) {
+	var initTime = new Date() - 10000;
+	TimeMe.startTimer(undefined, initTime);
+	TimeMe.stopTimer();
+	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped.");
-	assert.ok(actualTime >= 0, "Should be greater than or equal to 0.");
+	assert.ok(actualTime >= 10, "Should be greater than or equal to 10.");
+});
+
+QUnit.test("startTimer(): an initialized startTime should only be associated with a single 'page'", function (assert) {
+	var pageName1 = "page-1";
+	var pageName2 = "page-2";
+	var initTime1 = new Date() - 10000;	
+
+	TimeMe.startTimer(pageName1, initTime1);
+	TimeMe.stopTimer(pageName1);
+	TimeMe.startTimer(pageName2);
+	TimeMe.stopTimer(pageName2);
+	TimeMe.stopTimer(pageName2);
+	var page1Time = TimeMe.getTimeOnPageInSeconds(pageName1);
+	var page2Time = TimeMe.getTimeOnPageInSeconds(pageName2);
+
+	assert.ok(page1Time !== undefined, "Should not be undefined since timer started/stopped.");
+	assert.ok(page1Time >= 10, "Should be greater than or equal to 10s since an initTime was provided");
+	assert.ok(page2Time !== undefined, "Should not be undefined since timer started/stopped.");
+	assert.ok(page2Time < 10, "Should be less than 10s since we immediately started and stopped it.");
 });
 
 QUnit.test("stopTimer() is ignored the second time when called twice without stopping.", function (assert) {

@@ -2,7 +2,7 @@
 TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
 It disregards time spent on a web page if the user minimizes the browser or 
 switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
-a user is being collected.
+a user is being collected.  
 
 Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
 idle (no page mouse movement, no page keyboard input) for a customizable period of time,
@@ -16,10 +16,13 @@ These components put together create a much more accurate representation of how
 long users are actually using a web page.
 
 <h3>How do I use TimeMe.js?</h3>
-First, obtain a copy of timeme.js. A minified version is bundled in this repository as `timeme.min.js`. Alternatively, you can get a copy by installing TimeMe.js via npm or Bower: <br/><br/>
+First, obtain a copy of timeme.js. A minified version is bundled in this repository as `timeme.min.js`. Alternatively, you can get a copy by installing TimeMe.js via npm or Bower:
+
 <div class="code-block"><pre><code>npm install timeme.js --save
-bower install timeme.js</pre></code></div><br/>
-Once downloaded, simply include the following lines of code in your page's head element: <br/><br/>
+bower install timeme.js</pre></code></div>
+
+Once downloaded, simply include the following lines of code in your page's head element:
+
 <div class="code-block"><pre><code>&lt;script src="timeme.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript"&gt;
 	// Initialize library and start tracking time

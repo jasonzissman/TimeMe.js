@@ -16,7 +16,7 @@ These components put together create a much more accurate representation of how
 long users are actually using a web page.
 
 # Live Demo
-You can see a live demo of TimeMe.js here: https://jasonzissman.github.io/time-me-demo/
+You can see a <a href="https://jasonzissman.github.io/time-me-demo/" target="_blank">live demo of TimeMe.js here</a>.
 
 # How do I use TimeMe.js?
 First, obtain a copy of timeme.js. A minified version is bundled in this repository as `timeme.min.js`. Alternatively, you can get a copy by installing TimeMe.js via npm or Bower:

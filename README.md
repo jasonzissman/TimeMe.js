@@ -2,7 +2,7 @@
 TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
 It disregards time spent on a web page if the user minimizes the browser or 
 switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
-a user is being collected.  
+a user is collected.  
 
 Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
 idle (no page mouse movement, no page keyboard input) for a customizable period of time,

@@ -1,19 +1,12 @@
 # What is TimeMe.js?
-TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page.
-It disregards time spent on a web page if the user minimizes the browser or 
-switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
+TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page. It disregards time spent on a web page if the user minimizes the browser or switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
 a user is collected.  
 
-Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes 
-idle (no page mouse movement, no page keyboard input) for a customizable period of time,
-then TimeMe.js will automatically ignore this time. This means no time will be reported where a web page is open but the user isn't actually interacting with it (such as when they temporarily leave the computer).  
+Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes idle (no page mouse movement, no page keyboard input) for a customizable period of time, then TimeMe.js will automatically ignore this time. This means no time will be reported where a web page is open but the user isn't actually interacting with it (such as when they temporarily leave the computer).  
 
-Furthermore - TimeMe supports tracking time for specific elements within a page.  This means you
-can track and compare usage of different parts of the same web page.  Multiple concurrent timers
-are supported.
+Furthermore - TimeMe supports tracking time for specific elements within a page.  This means you can track and compare usage of different parts of the same web page.  Multiple concurrent timers are supported.
 
-These components put together create a much more accurate representation of how 
-long users are actually using a web page.
+Together, these attributes create a much more accurate representation of how long users are actually using a web page.
 
 # Live Demo
 You can see a <a href="https://jasonzissman.github.io/time-me-demo/" target="_blank">live demo of TimeMe.js here</a>.
@@ -40,19 +33,16 @@ Once downloaded, simply include the following lines of code in your page:
 	    var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
     </script>
 
-Notice that the code sample sets the idle duration to 30 seconds, which means 30 seconds of user inactivity (no mouse or keyboard usage on the page) will stop the timer.  Also,
-we define a page name (`my-home-page`) to associate with the current timer.
+Notice that the code sample sets the idle duration to 30 seconds, which means 30 seconds of user inactivity (no mouse or keyboard usage on the page) will stop the timer.  Also, we define a page name (`my-home-page`) to associate with the current timer.
 
-*Note*: You can time any activity that you want, not just page time.  Simply call the following code.
-TimeMe will automatically discount any idle or inactive time.
+*Note*: You can time any activity that you want, not just page time.  Simply call the following code. TimeMe will automatically discount any idle or inactive time.
 
     TimeMe.startTimer("my-activity");
     // ... some time later
     TimeMe.stopTimer("my-activity");
     var timeOnActivity = TimeMe.getTimeOnPageInSeconds("my-activity")
 
-TimeMe gives you a hook to execute a function after a user has been interacting with your
-page for a set period of time.  Simply call `TimeMe.callAfterTimeElapsedInSeconds()`:
+TimeMe gives you a hook to execute a function after a user has been interacting with your page for a set period of time.  Simply call `TimeMe.callAfterTimeElapsedInSeconds()`:
 
     TimeMe.callAfterTimeElapsedInSeconds(15, function(){
     	console.log("The user has been using the page for 15 seconds! Let's prompt them with something.");
@@ -80,13 +70,10 @@ TimeMe also lets you track how long users are interacting with specific elements
 
 # What do I do with the time I've tracked?
 
-In most cases you will want to store the time spent on a page for analytic purposes.  You will
-likely need to send the time spent on a page to a back-end server. 
+In most cases you will want to store the time spent on a page for analytic purposes.  You will likely need to send the time spent on a page to a back-end server. 
 
 ## Using WebSockets to send times
-TimeMe.js has websocket reporting built into it.  Your page will establish a websocket connection with your
-websocket server.  TimeMe will end the connection and report the user's time when the user leaves. 
-Simply provide a few arguments to the initialize() method to enable it:
+TimeMe.js has websocket reporting built into it.  Your page will establish a websocket connection with your websocket server.  TimeMe will end the connection and report the user's time when the user leaves.  Simply provide a few arguments to the initialize() method to enable it:
 
     TimeMe.initialize({
     	currentPageName: "my-home-page", // current page
@@ -98,9 +85,7 @@ Simply provide a few arguments to the initialize() method to enable it:
     });
 
 ## Using standard http requests to send time
-Alternatively you can issue an HTTP request to your back end server to report time.
-*Note*: the following example sends an HTTP request during the the `window.onbeforeunload` event. This approach may not work in all browsers as there is no guarantee that the request
-will complete before the browser terminates it.
+Alternatively you can issue an HTTP request to your back end server to report time. *Note*: the following example sends an HTTP request during the the `window.onbeforeunload` event. This approach may not work in all browsers as there is no guarantee that the request will complete before the browser terminates it.
 
     window.onbeforeunload = function (event) {
     	xmlhttp=new XMLHttpRequest();
@@ -110,11 +95,9 @@ will complete before the browser terminates it.
     	xmlhttp.send(timeSpentOnPage);
     };
 
-Using `onbeforeunload` is by no means a requirement.  You can hook into any other event
-or logical point in your application to send the time spent information to the server.
+Using `onbeforeunload` is by no means a requirement.  You can hook into any other event or logical point in your application to send the time spent information to the server.
 
-If using a Single Page Application (SPA) design, TimeMe.js can have its timer stopped,
-page name switched, and the timer resumed (for the new page) with the following calls:
+If using a Single Page Application (SPA) design, TimeMe.js can have its timer stopped, page name switched, and the timer resumed (for the new page) with the following calls:
 
     TimeMe.stopTimer();
     // ... Now might be a good time to upload the time spent on the page to your server!
@@ -122,8 +105,7 @@ page name switched, and the timer resumed (for the new page) with the following 
     TimeMe.setCurrentPageName("new-page-name");
     TimeMe.startTimer();
 	
-All page times are tracked in TimeMe.js, so you can review total aggregate time
-spent on each page for a particular user's session:
+All page times are tracked in TimeMe.js, so you can review total aggregate time spent on each page for a particular user's session:
 
     var timeSpentReport = TimeMe.getTimeOnAllPagesInSeconds();
 	
@@ -134,9 +116,7 @@ time spent on that page.
 All major desktop and mobile browsers.
 
 # How do I run the unit tests?
-You'll need to install QUnit, which should be packaged with TimeMe.js if you
-performed a Bower install of TimeMe.js.  Once you have installed QUnit, you can simply
-open the test files to execute the tests.
+You'll need to install QUnit, which should be packaged with TimeMe.js if you performed a Bower install of TimeMe.js.  Once you have installed QUnit, you can simply open the test files to execute the tests.
 
 # API
 
@@ -148,8 +128,7 @@ open the test files to execute the tests.
     // 	 appId: "insert-your-made-up-app-id"
     // }
 
-Initializes and starts first timer. Should only be called when first importing the
-library and beginning to time page usage. All config items are optional.
+Initializes and starts first timer. Should only be called when first importing the library and beginning to time page usage. All config items are optional.
 
 
 
@@ -169,13 +148,11 @@ Sets up a handler that executes after the user has spent the specified time inte
 
 
 ## `TimeMe.callWhenUserLeaves(callback, [[numberOfInvocations]]);`
-Sets up a handler that executes when the user is no longer interacting with the page due to inactivity,
-switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.
+Sets up a handler that executes when the user is no longer interacting with the page due to inactivity, switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.
 
 
 ## `TimeMe.callWhenUserReturns(callback, [[numberOfInvocations]]);`
-Sets up a handler that executes when the user returns to the page after inactivity,
-switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.
+Sets up a handler that executes when the user returns to the page after inactivity, switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.
 
 
 ## `TimeMe.trackTimeOnElement(elementId);`
@@ -196,8 +173,7 @@ Retrieves the time spent on all pages that have been recorded using TimeMe.js. N
 only initialized once.
 
 ## `TimeMe.startTimer();`
-Manually starts the timer for the current page.  Notice this only works if the
-timer is currently stopped.
+Manually starts the timer for the current page.  Notice this only works if the timer is currently stopped.
 
 ## `TimeMe.stopTimer();`
 Manually stops the timer.  Notice this only works if the timer is currently running.

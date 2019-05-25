@@ -120,7 +120,7 @@ You'll need to install QUnit, which should be packaged with TimeMe.js if you per
 
 # API
 
-## `TimeMe.initialize(options);`
+### `TimeMe.initialize(options);`
     // options.currentPageName // - Name of the page (home, about, etc.)
     // options.idleTimeoutInSeconds // - how much inactive time before user considered idle
     // options.websocketOptions: { // Turn on websocket reporting
@@ -132,56 +132,56 @@ Initializes and starts first timer. Should only be called when first importing t
 
 
 
-## `TimeMe.getTimeOnCurrentPageInSeconds();`
+### `TimeMe.getTimeOnCurrentPageInSeconds();`
 Retrieves the time spent (in seconds) on the current page.
 
 
 
-## `TimeMe.getTimeOnPageInSeconds(pageName);`
+### `TimeMe.getTimeOnPageInSeconds(pageName);`
 Retrieves the time spent (in seconds) on the indicated page.
 
 
 
-## `TimeMe.callAfterTimeElapsedInSeconds(timeInSeconds, callback);`
+### `TimeMe.callAfterTimeElapsedInSeconds(timeInSeconds, callback);`
 Sets up a handler that executes after the user has spent the specified time interacting with the page.
 
 
 
-## `TimeMe.callWhenUserLeaves(callback, [[numberOfInvocations]]);`
+### `TimeMe.callWhenUserLeaves(callback, [[numberOfInvocations]]);`
 Sets up a handler that executes when the user is no longer interacting with the page due to inactivity, switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.
 
 
-## `TimeMe.callWhenUserReturns(callback, [[numberOfInvocations]]);`
+### `TimeMe.callWhenUserReturns(callback, [[numberOfInvocations]]);`
 Sets up a handler that executes when the user returns to the page after inactivity, switching tabs, or switching apps.  You can optionally provide numberOfInvocations to limit how many times this executes.
 
 
-## `TimeMe.trackTimeOnElement(elementId);`
+### `TimeMe.trackTimeOnElement(elementId);`
 Start timing all user activity on a certain element.  A timer will be created that tracks how long the user typed, clicked, moused over, or otherwised focused on this element. Must pass in the ID of the HTML element.
 
-## `TimeMe.getTimeOnElementInSeconds(elementId);`
+### `TimeMe.getTimeOnElementInSeconds(elementId);`
 Retrieve the time spent by a user on a specific element. Must pass in the ID of the HTML element.
 
-## `TimeMe.setCurrentPageName(newPageName);`
+### `TimeMe.setCurrentPageName(newPageName);`
 Sets the page name to be associated with any future calls to timer. 
 
-## `TimeMe.setIdleDurationInSeconds(durationInSeconds);`
+### `TimeMe.setIdleDurationInSeconds(durationInSeconds);`
 Sets the time (in seconds) that a user is idle before the timer is
 turned off.  Set this value to -1 to disable idle time outs.
 
-## `TimeMe.getTimeOnAllPagesInSeconds();`
+### `TimeMe.getTimeOnAllPagesInSeconds();`
 Retrieves the time spent on all pages that have been recorded using TimeMe.js. Notice this only works for Single Page Applications (SPAs) where TimeMe.js is
 only initialized once.
 
-## `TimeMe.startTimer();`
+### `TimeMe.startTimer();`
 Manually starts the timer for the current page.  Notice this only works if the timer is currently stopped.
 
-## `TimeMe.stopTimer();`
+### `TimeMe.stopTimer();`
 Manually stops the timer.  Notice this only works if the timer is currently running.
 
-## `TimeMe.resetRecordedPageTime(pageName);`
+### `TimeMe.resetRecordedPageTime(pageName);`
 Clears the recorded time for the indicated page name.
 
-## `TimeMe.resetAllRecordedPageTimes();`
+### `TimeMe.resetAllRecordedPageTimes();`
 Clears all recorded times for all pages.
 
 				

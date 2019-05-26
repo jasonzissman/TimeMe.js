@@ -76,6 +76,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 
+			// startTime is optional. If provided, must be of type Date(). By providing
+			// startTime, you are overriding the internal timing mechanism and manually
+			// indicating the start time.
 			startTimer: function (pageName, startTime) {
 				if (!pageName) {
 					pageName = TimeMe.currentPageName;
@@ -105,7 +108,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 
-			stopTimer: function (pageName) {
+			// stopTime is optional. If provided, must be of type Date(). By providing
+			// stopTime, you are overriding the internal timing mechanism and manually
+			// indicating the stop time.
+			stopTimer: function (pageName, stopTime) {
 				if (!pageName) {
 					pageName = TimeMe.currentPageName;
 				}
@@ -115,7 +121,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					return;
 				}
 				if (arrayOfTimes[arrayOfTimes.length - 1].stopTime === undefined) {
-					arrayOfTimes[arrayOfTimes.length - 1].stopTime = new Date();
+					arrayOfTimes[arrayOfTimes.length - 1].stopTime = stopTime || new Date();
 				}
 				TimeMe.active = false;
 			},
@@ -129,7 +135,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (timeInMs === undefined) {
 					return undefined;
 				} else {
-					return TimeMe.getTimeOnPageInMilliseconds(pageName) / 1000;
+					return timeInMs / 1000;
 				}
 			},
 

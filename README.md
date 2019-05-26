@@ -1,12 +1,5 @@
 # What is TimeMe.js?
-TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page. It disregards time spent on a web page if the user minimizes the browser or switches to a different tab.  This means a more accurate reflection of actual 'interaction' time by 
-a user is collected.  
-
-Additionally, TimeMe.js disregards 'idle' time outs.  If the user goes idle (no page mouse movement, no page keyboard input) for a customizable period of time, then TimeMe.js will automatically ignore this time. This means no time will be reported where a web page is open but the user isn't actually interacting with it (such as when they temporarily leave the computer).  
-
-Furthermore - TimeMe supports tracking time for specific elements within a page.  This means you can track and compare usage of different parts of the same web page.  Multiple concurrent timers are supported.
-
-Together, these attributes create a much more accurate representation of how long users are actually using a web page.
+TimeMe.js is a JavaScript library that accurately tracks how long users interact with a web page. It disregards time spent on a web page if the user minimizes the browser or switches to a different tab. TimeMe.js also disregards 'idle' time: if the user goes idle (no mouse movement, no keyboard input) for a customizable period of time, TimeMe.js will stop tracking. Together, these attributes create a much more accurate representation of how long users are actually using a web page.
 
 # Live Demo
 You can see a <a href="https://jasonzissman.github.io/time-me-demo/" target="_blank">live demo of TimeMe.js here</a>.
@@ -35,7 +28,7 @@ Once downloaded, simply include the following lines of code in your page:
 
 Notice that the code sample sets the idle duration to 30 seconds, which means 30 seconds of user inactivity (no mouse or keyboard usage on the page) will stop the timer.  Also, we define a page name (`my-home-page`) to associate with the current timer.
 
-*Note*: You can time any activity that you want, not just page time.  Simply call the following code. TimeMe will automatically discount any idle or inactive time.
+*Note*: You can use TimeMe.js to time any activity that you want, not just page time.  Simply call the following code around the activity of interest. TimeMe.js will automatically discount any idle time or time when viewing another tab or application.
 
     TimeMe.startTimer("my-activity");
     // ... some time later
@@ -45,7 +38,7 @@ Notice that the code sample sets the idle duration to 30 seconds, which means 30
 TimeMe gives you a hook to execute a function after a user has been interacting with your page for a set period of time.  Simply call `TimeMe.callAfterTimeElapsedInSeconds()`:
 
     TimeMe.callAfterTimeElapsedInSeconds(15, function(){
-    	console.log("The user has been using the page for 15 seconds! Let's prompt them with something.");
+    	console.log("The user has been actively using the page for 15 seconds! Let's prompt them with something.");
     });
 
 TimeMe also lets you execute code when a user leaves the page (due to switching tabs, inactivity, etc.) and executes it when he or she returns:

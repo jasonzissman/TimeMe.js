@@ -7,6 +7,38 @@ QUnit.module("Basic Tests", {
 	}
 });
 
+QUnit.test("getTimeOnCurrentPage() scenario 1", function (assert) {
+
+	// Assume one timer has been created for page "test-home-page". It was
+	// started once at date=1500000000000 ms, and stopped at date=1500000001000 ms.
+
+	var pageName = "test-home-page";
+	TimeMe.startTimer(pageName, new Date(1500000000000));
+	TimeMe.stopTimer(pageName, new Date(1500000001000));
+
+	assert.equal(TimeMe.getTimeOnPageInSeconds(pageName), 1, "1s has elapsed");
+	assert.equal(TimeMe.getTimeOnPageInMilliseconds(pageName), 1000, "1000ms have elapsed");
+});
+
+QUnit.test("getTimeOnCurrentPage() scenario 2", function (assert) {
+
+	// Assume two overlapping timers have been created for page "test-home-page-1" 
+	// and "test-home-page-2".
+
+	var pageName1 = "test-home-page-1";
+	var pageName2 = "test-home-page-2";
+	TimeMe.startTimer(pageName1, new Date(1500000000000));
+	TimeMe.startTimer(pageName2, new Date(1500000000000));
+	TimeMe.stopTimer(pageName2, new Date(1500000003000));
+	TimeMe.stopTimer(pageName1, new Date(1500000005000));
+
+	assert.equal(TimeMe.getTimeOnPageInSeconds(pageName1), 5, "5s have elapsed");
+	assert.equal(TimeMe.getTimeOnPageInMilliseconds(pageName1), 5000, "5000ms have elapsed");
+
+	assert.equal(TimeMe.getTimeOnPageInSeconds(pageName2),3, "3s have elapsed");
+	assert.equal(TimeMe.getTimeOnPageInMilliseconds(pageName2), 3000, "3000ms have elapsed");
+});
+
 QUnit.test("getTimeOnPage() returns undefined if timer not started.", function (assert) {
 	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	var expectedTime = undefined;

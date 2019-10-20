@@ -184,7 +184,7 @@ To minify the code, run the following:
     # install uglify if not already available
     npm install uglify-js -g
 	
-	# install uglify if not already available
+	# Minify the code
     uglifyjs timeme.js --mangle --compress --support-ie8 --output timeme.min.js
 
 	

@@ -1,4 +1,4 @@
-/*Copyright (c) 2017 Jason Zissman
+/*Copyright (c) 2019 Jason Zissman
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
 the Software without restriction, including without limitation the rights to
@@ -39,8 +39,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			idleTimeoutMs: 30 * 1000,
 			currentIdleTimeMs: 0,
 			checkStateRateMs: 250,
-			active: false,
-			idle: false,
+			active: false, // state if we are actively recording time
+			idle: false, // state if user on page but not interacting
 			currentPageName: "default-page-name",
 			timeElapsedCallbacks: [],
 			userLeftCallbacks: [],
@@ -99,6 +99,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					"stopTime": undefined
 				});
 				TimeMe.active = true;
+				TimeMe.idle = false;
 			},
 
 			stopAllTimers: function () {
@@ -276,7 +277,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						TimeMe.timeElapsedCallbacks[i].pending = false;
 					}
 				}
-
 				if (TimeMe.idle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
 					TimeMe.idle = true;
 					TimeMe.triggerUserHasLeftPage();
@@ -308,7 +308,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					if (document[TimeMe.hiddenPropName]) {
 						TimeMe.triggerUserHasLeftPage();
 					} else {
-						TimeMe.triggerUserHasReturned();
+						TimeMe.triggerUserHasReturned();						
 					}
 				}, false);
 

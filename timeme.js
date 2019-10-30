@@ -320,7 +320,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					TimeMe.triggerUserHasReturned();
 				});
 
-				document.addEventListener("mousemove", function () { TimeMe.resetIdleCountdown(); });
+				document.addEventListener("mousemove", function () { 
+					TimeMe.resetIdleCountdown(); 
+					window.focus();
+				});
 				document.addEventListener("keyup", function () { TimeMe.resetIdleCountdown(); });
 				document.addEventListener("touchstart", function () { TimeMe.resetIdleCountdown(); });
 				window.addEventListener("scroll", function () { TimeMe.resetIdleCountdown(); });

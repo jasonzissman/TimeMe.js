@@ -7,6 +7,7 @@
     "test": "tests"
   },
   "scripts": {
+    "build": "uglifyjs timeme.js --mangle --compress --ie8 --output timeme.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/jasonzissman/TimeMe.js#readme",
   "devDependencies": {
-    "bower": "^1.8.0"
+    "bower": "^1.8.0",
+    "uglify-js": "^3.10.0"
   }
 }

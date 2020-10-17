@@ -109,7 +109,7 @@ time spent on that page.
 All major desktop and mobile browsers.
 
 # How do I run the unit tests?
-You'll need to install QUnit, which should be packaged with TimeMe.js if you performed a Bower install of TimeMe.js.  Once you have installed QUnit, you can simply open the test files to execute the tests.
+You'll need to install QUnit, which should be packaged with TimeMe.js if you performed a Bower install of TimeMe.js.  Once you have installed QUnit, you can simply open the test HTML files in a browser to execute the tests.
 
 # API
 

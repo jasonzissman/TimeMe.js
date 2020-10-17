@@ -1,13 +1,13 @@
 QUnit.module("Basic Tests", {
-	beforeEach: function () {
+	beforeEach: () => {
 		TimeMe.resetAllRecordedPageTimes();
 	},
-	afterEach: function () {
+	afterEach: () => {
 		TimeMe.resetAllRecordedPageTimes();
 	}
 });
 
-QUnit.test("getTimeOnCurrentPage() scenario 1", function (assert) {
+QUnit.test("getTimeOnCurrentPage() scenario 1", (assert) => {
 
 	// Assume one timer has been created for page "test-home-page". It was
 	// started once at date=1500000000000 ms, and stopped at date=1500000001000 ms.
@@ -20,7 +20,7 @@ QUnit.test("getTimeOnCurrentPage() scenario 1", function (assert) {
 	assert.equal(TimeMe.getTimeOnPageInMilliseconds(pageName), 1000, "1000ms have elapsed");
 });
 
-QUnit.test("getTimeOnCurrentPage() scenario 2", function (assert) {
+QUnit.test("getTimeOnCurrentPage() scenario 2", (assert) => {
 
 	// Assume two overlapping timers have been created for page "test-home-page-1" 
 	// and "test-home-page-2".
@@ -39,19 +39,19 @@ QUnit.test("getTimeOnCurrentPage() scenario 2", function (assert) {
 	assert.equal(TimeMe.getTimeOnPageInMilliseconds(pageName2), 3000, "3000ms have elapsed");
 });
 
-QUnit.test("getTimeOnPage() returns undefined if timer not started.", function (assert) {
+QUnit.test("getTimeOnPage() returns undefined if timer not started.", (assert) => {
 	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	let expectedTime = undefined;
 	assert.equal(actualTime, expectedTime, "Should return undefined if timer not started");
 });
 
-QUnit.test("getTimeOnAllPagesInSeconds() returns empty array by default.", function (assert) {
+QUnit.test("getTimeOnAllPagesInSeconds() returns empty array by default.", (assert) => {
 	let actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
 	let numberEntriesActualTimes = Object.keys(actualTimes).length;
 	assert.equal(numberEntriesActualTimes, 0, "Should return empty array.");
 });
 
-QUnit.test("startTimer() and stopTimer() keeps track of time spent.", function (assert) {
+QUnit.test("startTimer() and stopTimer() keeps track of time spent.", (assert) => {
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
 	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
@@ -60,7 +60,7 @@ QUnit.test("startTimer() and stopTimer() keeps track of time spent.", function (
 	assert.ok(actualTime >= 0, "Should be greater than or equal to 0.");
 });
 
-QUnit.test("startTimer() and stopTimer() keeps track of time spent on specific pages.", function (assert) {
+QUnit.test("startTimer() and stopTimer() keeps track of time spent on specific pages.", (assert) => {
 	TimeMe.setCurrentPageName("first page");
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
@@ -77,7 +77,7 @@ QUnit.test("startTimer() and stopTimer() keeps track of time spent on specific p
 	assert.equal(actualTimes[1].pageName, "second page", "Second response should be second page");
 });
 
-QUnit.test("resetAllRecordedPageTimes() should clear out all times.", function (assert) {
+QUnit.test("resetAllRecordedPageTimes() should clear out all times.", (assert) => {
 	TimeMe.setCurrentPageName("first page");
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
@@ -90,12 +90,12 @@ QUnit.test("resetAllRecordedPageTimes() should clear out all times.", function (
 	assert.equal(actualTimes.length, 2, "Should have two entries.");
 
 	TimeMe.resetAllRecordedPageTimes();
-	let actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
+	actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
 	let expectedNumberOfEntries = 0;
 	assert.equal(actualTimes.length, expectedNumberOfEntries, "Should have no entries since we cleared them out.");
 });
 
-QUnit.test("startTimer() is ignored the second time when called twice without stopping.", function (assert) {
+QUnit.test("startTimer() is ignored the second time when called twice without stopping.", (assert) => {
 	TimeMe.startTimer();
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
@@ -103,7 +103,7 @@ QUnit.test("startTimer() is ignored the second time when called twice without st
 	assert.ok(actualTime >= 0, "Should record time based on initialized point");
 });
 
-QUnit.test("startTimer() and stopTimer() reset the 'active' and 'idle' states", function (assert) {
+QUnit.test("startTimer() and stopTimer() reset the 'active' and 'idle' states", (assert) => {
 
 	// Default state is not idle and not active
 	assert.equal(TimeMe.active, false);
@@ -131,7 +131,7 @@ QUnit.test("startTimer() and stopTimer() reset the 'active' and 'idle' states", 
 	assert.equal(TimeMe.idle, false);
 });
 
-QUnit.test("startTimer() can accept an initialized startTime", function (assert) {
+QUnit.test("startTimer() can accept an initialized startTime", (assert) => {
 	let initTime = new Date() - 10000;
 	TimeMe.startTimer(undefined, initTime);
 	TimeMe.stopTimer();
@@ -140,7 +140,7 @@ QUnit.test("startTimer() can accept an initialized startTime", function (assert)
 	assert.ok(actualTime >= 10, "Should be greater than or equal to 10.");
 });
 
-QUnit.test("startTimer(): an initialized startTime should only be associated with a single 'page'", function (assert) {
+QUnit.test("startTimer(): an initialized startTime should only be associated with a single 'page'", (assert) => {
 	let pageName1 = "page-1";
 	let pageName2 = "page-2";
 	let initTime1 = new Date() - 10000;	
@@ -159,7 +159,7 @@ QUnit.test("startTimer(): an initialized startTime should only be associated wit
 	assert.ok(page2Time < 10, "Should be less than 10s since we immediately started and stopped it.");
 });
 
-QUnit.test("stopTimer() is ignored the second time when called twice without stopping.", function (assert) {
+QUnit.test("stopTimer() is ignored the second time when called twice without stopping.", (assert) => {
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
 	TimeMe.stopTimer();
@@ -168,7 +168,7 @@ QUnit.test("stopTimer() is ignored the second time when called twice without sto
 	assert.ok(actualTime >= 0, "Should be greater than or equal to 0.");
 });
 
-QUnit.test("initialize() should start timer", function (assert) {
+QUnit.test("initialize() should start timer", (assert) => {
 	TimeMe.initialize();
 	TimeMe.stopTimer();
 	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
@@ -176,9 +176,9 @@ QUnit.test("initialize() should start timer", function (assert) {
 	assert.ok(actualTime >= 0, "Should be greater than or equal to 0.");
 });
 
-QUnit.test("callWhenUserLeaves() should execute only once if indicated", function (assert) {
+QUnit.test("callWhenUserLeaves() should execute only once if indicated", (assert) => {
 	let counter = 0;
-	TimeMe.callWhenUserLeaves(function () {
+	TimeMe.callWhenUserLeaves(() => {
 		counter++;
 	}, 1);
 	assert.equal(counter, 0);
@@ -195,9 +195,9 @@ QUnit.test("callWhenUserLeaves() should execute only once if indicated", functio
 	TimeMe.triggerUserHasLeftPage();
 	assert.equal(counter, 1);
 });
-QUnit.test("callWhenUserLeaves() should execute repeatedly if no limit specified", function (assert) {
+QUnit.test("callWhenUserLeaves() should execute repeatedly if no limit specified", (assert) => {
 	let counter = 0;
-	TimeMe.callWhenUserLeaves(function () {
+	TimeMe.callWhenUserLeaves(() => {
 		counter++;
 	});
 	assert.equal(counter, 0);
@@ -214,9 +214,9 @@ QUnit.test("callWhenUserLeaves() should execute repeatedly if no limit specified
 	TimeMe.triggerUserHasLeftPage();
 	assert.equal(counter, 3);
 });
-QUnit.test("callWhenUserReturns() should execute only once if indicated", function (assert) {
+QUnit.test("callWhenUserReturns() should execute only once if indicated", (assert) => {
 	let counter = 0;
-	TimeMe.callWhenUserReturns(function () {
+	TimeMe.callWhenUserReturns(() => {
 		counter++;
 	}, 1);
 	assert.equal(counter, 0);
@@ -233,9 +233,9 @@ QUnit.test("callWhenUserReturns() should execute only once if indicated", functi
 	TimeMe.triggerUserHasReturned();
 	assert.equal(counter, 1);
 });
-QUnit.test("callWhenUserReturns() should execute repeatedly if no limit specified", function (assert) {
+QUnit.test("callWhenUserReturns() should execute repeatedly if no limit specified", (assert) => {
 	let counter = 0;
-	TimeMe.callWhenUserReturns(function () {
+	TimeMe.callWhenUserReturns(() => {
 		counter++;
 	});
 	assert.equal(counter, 0);
@@ -252,14 +252,14 @@ QUnit.test("callWhenUserReturns() should execute repeatedly if no limit specifie
 	TimeMe.triggerUserHasReturned();
 	assert.equal(counter, 3);
 });
-QUnit.test("stopAllTimers() should stop all timers", function (assert) {
+QUnit.test("stopAllTimers() should stop all timers", (assert) => {
 	let done = assert.async();
 
 	TimeMe.startTimer("my-1st-timer");
 	TimeMe.startTimer("my-2nd-timer");
 	TimeMe.startTimer("my-3rd-timer");
 
-	setTimeout(function () {
+	setTimeout(() => {
 
 		TimeMe.stopAllTimers();
 
@@ -271,7 +271,7 @@ QUnit.test("stopAllTimers() should stop all timers", function (assert) {
 		assert.ok(originalTime2 > 9);
 		assert.ok(originalTime3 > 9);
 
-		setTimeout(function () {
+		setTimeout(() => {
 			assert.equal(TimeMe.getTimeOnPageInMilliseconds("my-1st-timer"), originalTime1);
 			assert.equal(TimeMe.getTimeOnPageInMilliseconds("my-2nd-timer"), originalTime2);
 			assert.equal(TimeMe.getTimeOnPageInMilliseconds("my-3rd-timer"), originalTime3);

@@ -193,12 +193,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						message: "An invalid duration time (" + duration + ") was provided."
 					};
 				}
-				return this;
 			},
 
 			setCurrentPageName: (pageName) => {
 				TimeMe.currentPageName = pageName;
-				return this;
 			},
 
 			resetRecordedPageTime: (pageName) => {
@@ -221,14 +219,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			callWhenUserLeaves: (callback, numberOfTimesToInvoke) => {
-				this.userLeftCallbacks.push({
+				TimeMe.userLeftCallbacks.push({
 					callback: callback,
 					numberOfTimesToInvoke: numberOfTimesToInvoke
 				})
 			},
 
 			callWhenUserReturns: (callback, numberOfTimesToInvoke) => {
-				this.userReturnCallbacks.push({
+				TimeMe.userReturnCallbacks.push({
 					callback: callback,
 					numberOfTimesToInvoke: numberOfTimesToInvoke
 				})
@@ -236,8 +234,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			triggerUserHasReturned: () => {
 				if (!TimeMe.active) {
-					for (let i = 0; i < this.userReturnCallbacks.length; i++) {
-						let userReturnedCallback = this.userReturnCallbacks[i];
+					for (let i = 0; i < TimeMe.userReturnCallbacks.length; i++) {
+						let userReturnedCallback = TimeMe.userReturnCallbacks[i];
 						let numberTimes = userReturnedCallback.numberOfTimesToInvoke;
 						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0) {
 							userReturnedCallback.numberOfTimesToInvoke -= 1;
@@ -250,8 +248,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			triggerUserHasLeftPage: () => {
 				if (TimeMe.active) {
-					for (let i = 0; i < this.userLeftCallbacks.length; i++) {
-						let userHasLeftCallback = this.userLeftCallbacks[i];
+					for (let i = 0; i < TimeMe.userLeftCallbacks.length; i++) {
+						let userHasLeftCallback = TimeMe.userLeftCallbacks[i];
 						let numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
 						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0) {
 							userHasLeftCallback.numberOfTimesToInvoke -= 1;
@@ -374,7 +372,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						}
 					}
 				}
-				return this;
 			},
 
 			websocketSend: (data) => {
@@ -423,9 +420,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 
 				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)
-					.setCurrentPageName(currentPageName)
-					.setUpWebsocket(websocketOptions)
-					.listenForVisibilityEvents(trackWhenUserLeavesPage, trackWhenUserGoesIdle);
+				TimeMe.setCurrentPageName(currentPageName)
+				TimeMe.setUpWebsocket(websocketOptions)
+				TimeMe.listenForVisibilityEvents(trackWhenUserLeavesPage, trackWhenUserGoesIdle);
 
 				// TODO - only do this if page currently visible.
 

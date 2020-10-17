@@ -16,8 +16,8 @@ Once downloaded, simply include the following lines of code in your page:
     <script type="text/javascript">
 	    // Initialize library and start tracking time
 	    TimeMe.initialize({
-    	currentPageName: "my-home-page", // current page
-    	idleTimeoutInSeconds: 30 // seconds
+    	    currentPageName: "my-home-page", // current page
+    	    idleTimeoutInSeconds: 30 // seconds
 	    });
 
 	    // ... Some time later ...
@@ -114,9 +114,12 @@ You'll need to install QUnit, which should be packaged with TimeMe.js if you per
 # API
 
 ### `TimeMe.initialize(options);`
-    // options.currentPageName // - Name of the page (home, about, etc.)
-    // options.idleTimeoutInSeconds // - how much inactive time before user considered idle
-    // options.websocketOptions: { // Turn on websocket reporting
+    // options.currentPageName // - Optional. Name of the page (home, about, etc.).
+    // options.idleTimeoutInSeconds // - Optional. How long before user is considered idle. Default is 30s.
+    // options.initialStartTime // - Optional. Indicates start time for timer manually. Must be of type Date(). Default is *now*.
+	// options.trackWhenUserLeavesPage // Optional. Must be type boolean. Default is true.
+	// options.trackWhenUserGoesIdle // Optional. Must be type boolean. Default is true.
+    // options.websocketOptions: { // Optional. Turn on websocket reporting.
     // 	 websocketHost: "ws://your_host:your_port",
     // 	 appId: "insert-your-made-up-app-id"
     // }

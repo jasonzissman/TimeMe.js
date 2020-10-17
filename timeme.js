@@ -413,6 +413,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					currentPageName = options.currentPageName || currentPageName;
 					websocketOptions = options.websocketOptions;
 					initialStartTime = options.initialStartTime;
+
+					if (options.trackWhenUserLeavesPage === false) {
+						trackWhenUserLeavesPage = false;
+					}
+					if (options.trackWhenUserGoesIdle === false) {
+						trackWhenUserGoesIdle = false;
+					}
 				}
 
 				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)

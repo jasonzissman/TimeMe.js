@@ -33,7 +33,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		}
 	})(this, () => {
 
-		var TimeMe = {
+		let TimeMe = {
 
 			startStopTimes: {},
 			idleTimeoutMs: 30 * 1000,
@@ -47,7 +47,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			userReturnCallbacks: [],
 
 			trackTimeOnElement: (elementId) => {
-				var element = document.getElementById(elementId);
+				let element = document.getElementById(elementId);
 				if (element) {
 					element.addEventListener("mouseover", () => {
 						TimeMe.startTimer(elementId);
@@ -68,7 +68,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			getTimeOnElementInSeconds: (elementId) => {
-				var time = TimeMe.getTimeOnPageInSeconds(elementId);
+				let time = TimeMe.getTimeOnPageInSeconds(elementId);
 				if (time) {
 					return time;
 				} else {
@@ -87,8 +87,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (TimeMe.startStopTimes[pageName] === undefined) {
 					TimeMe.startStopTimes[pageName] = [];
 				} else {
-					var arrayOfTimes = TimeMe.startStopTimes[pageName];
-					var latestStartStopEntry = arrayOfTimes[arrayOfTimes.length - 1];
+					let arrayOfTimes = TimeMe.startStopTimes[pageName];
+					let latestStartStopEntry = arrayOfTimes[arrayOfTimes.length - 1];
 					if (latestStartStopEntry !== undefined && latestStartStopEntry.stopTime === undefined) {
 						// Can't start new timer until previous finishes.
 						return;
@@ -103,8 +103,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			stopAllTimers: () => {
-				var pageNames = Object.keys(TimeMe.startStopTimes);
-				for (var i = 0; i < pageNames.length; i++) {
+				let pageNames = Object.keys(TimeMe.startStopTimes);
+				for (let i = 0; i < pageNames.length; i++) {
 					TimeMe.stopTimer(pageNames[i]);
 				}
 			},
@@ -116,7 +116,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (!pageName) {
 					pageName = TimeMe.currentPageName;
 				}
-				var arrayOfTimes = TimeMe.startStopTimes[pageName];
+				let arrayOfTimes = TimeMe.startStopTimes[pageName];
 				if (arrayOfTimes === undefined || arrayOfTimes.length === 0) {
 					// Can't stop timer before you've started it.
 					return;
@@ -132,7 +132,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			getTimeOnPageInSeconds: (pageName) => {
-				var timeInMs = TimeMe.getTimeOnPageInMilliseconds(pageName);
+				let timeInMs = TimeMe.getTimeOnPageInMilliseconds(pageName);
 				if (timeInMs === undefined) {
 					return undefined;
 				} else {
@@ -146,22 +146,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			getTimeOnPageInMilliseconds: (pageName) => {
 
-				var totalTimeOnPage = 0;
+				let totalTimeOnPage = 0;
 
-				var arrayOfTimes = TimeMe.startStopTimes[pageName];
+				let arrayOfTimes = TimeMe.startStopTimes[pageName];
 				if (arrayOfTimes === undefined) {
 					// Can't get time on page before you've started the timer.
 					return;
 				}
 
-				var timeSpentOnPageInSeconds = 0;
-				for (var i = 0; i < arrayOfTimes.length; i++) {
-					var startTime = arrayOfTimes[i].startTime;
-					var stopTime = arrayOfTimes[i].stopTime;
+				let timeSpentOnPageInSeconds = 0;
+				for (let i = 0; i < arrayOfTimes.length; i++) {
+					let startTime = arrayOfTimes[i].startTime;
+					let stopTime = arrayOfTimes[i].stopTime;
 					if (stopTime === undefined) {
 						stopTime = new Date();
 					}
-					var difference = stopTime - startTime;
+					let difference = stopTime - startTime;
 					timeSpentOnPageInSeconds += (difference);
 				}
 
@@ -170,11 +170,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			getTimeOnAllPagesInSeconds: () => {
-				var allTimes = [];
-				var pageNames = Object.keys(TimeMe.startStopTimes);
-				for (var i = 0; i < pageNames.length; i++) {
-					var pageName = pageNames[i];
-					var timeOnPage = TimeMe.getTimeOnPageInSeconds(pageName);
+				let allTimes = [];
+				let pageNames = Object.keys(TimeMe.startStopTimes);
+				for (let i = 0; i < pageNames.length; i++) {
+					let pageName = pageNames[i];
+					let timeOnPage = TimeMe.getTimeOnPageInSeconds(pageName);
 					allTimes.push({
 						"pageName": pageName,
 						"timeOnPage": timeOnPage
@@ -184,7 +184,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			setIdleDurationInSeconds: (duration) => {
-				var durationFloat = parseFloat(duration);
+				let durationFloat = parseFloat(duration);
 				if (isNaN(durationFloat) === false) {
 					TimeMe.idleTimeoutMs = duration * 1000;
 				} else {
@@ -206,8 +206,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			resetAllRecordedPageTimes: () => {
-				var pageNames = Object.keys(TimeMe.startStopTimes);
-				for (var i = 0; i < pageNames.length; i++) {
+				let pageNames = Object.keys(TimeMe.startStopTimes);
+				for (let i = 0; i < pageNames.length; i++) {
 					TimeMe.resetRecordedPageTime(pageNames[i]);
 				}
 			},
@@ -236,9 +236,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			triggerUserHasReturned: () => {
 				if (!TimeMe.active) {
-					for (var i = 0; i < this.userReturnCallbacks.length; i++) {
-						var userReturnedCallback = this.userReturnCallbacks[i];
-						var numberTimes = userReturnedCallback.numberOfTimesToInvoke;
+					for (let i = 0; i < this.userReturnCallbacks.length; i++) {
+						let userReturnedCallback = this.userReturnCallbacks[i];
+						let numberTimes = userReturnedCallback.numberOfTimesToInvoke;
 						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0) {
 							userReturnedCallback.numberOfTimesToInvoke -= 1;
 							userReturnedCallback.callback();
@@ -250,9 +250,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			triggerUserHasLeftPage: () => {
 				if (TimeMe.active) {
-					for (var i = 0; i < this.userLeftCallbacks.length; i++) {
-						var userHasLeftCallback = this.userLeftCallbacks[i];
-						var numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
+					for (let i = 0; i < this.userLeftCallbacks.length; i++) {
+						let userHasLeftCallback = this.userLeftCallbacks[i];
+						let numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
 						if (isNaN(numberTimes) || (numberTimes === undefined) || numberTimes > 0) {
 							userHasLeftCallback.numberOfTimesToInvoke -= 1;
 							userHasLeftCallback.callback();
@@ -271,7 +271,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			checkIdleState: () => {
-				for (var i = 0; i < TimeMe.timeElapsedCallbacks.length; i++) {
+				for (let i = 0; i < TimeMe.timeElapsedCallbacks.length; i++) {
 					if (TimeMe.timeElapsedCallbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
 						TimeMe.timeElapsedCallbacks[i].callback();
 						TimeMe.timeElapsedCallbacks[i].pending = false;
@@ -341,7 +341,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			setUpWebsocket: (websocketOptions) => {
 				if (window.WebSocket && websocketOptions) {
-					var websocketHost = websocketOptions.websocketHost; // "ws://hostname:port"
+					let websocketHost = websocketOptions.websocketHost; // "ws://hostname:port"
 					try {
 						TimeMe.websocket = new WebSocket(websocketHost);
 						window.onbeforeunload = () => {
@@ -374,8 +374,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			sendCurrentTime: (appId) => {
-				var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInMilliseconds();
-				var data = {
+				let timeSpentOnPage = TimeMe.getTimeOnCurrentPageInMilliseconds();
+				let data = {
 					type: "INSERT_TIME",
 					appId: appId,
 					timeOnPageMs: timeSpentOnPage,
@@ -384,7 +384,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.websocketSend(data);
 			},
 			sendInitWsRequest: (appId) => {
-				var data = {
+				let data = {
 					type: "INIT",
 					appId: appId
 				};

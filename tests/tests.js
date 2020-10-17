@@ -12,7 +12,7 @@ QUnit.test("getTimeOnCurrentPage() scenario 1", function (assert) {
 	// Assume one timer has been created for page "test-home-page". It was
 	// started once at date=1500000000000 ms, and stopped at date=1500000001000 ms.
 
-	var pageName = "test-home-page";
+	let pageName = "test-home-page";
 	TimeMe.startTimer(pageName, new Date(1500000000000));
 	TimeMe.stopTimer(pageName, new Date(1500000001000));
 
@@ -25,8 +25,8 @@ QUnit.test("getTimeOnCurrentPage() scenario 2", function (assert) {
 	// Assume two overlapping timers have been created for page "test-home-page-1" 
 	// and "test-home-page-2".
 
-	var pageName1 = "test-home-page-1";
-	var pageName2 = "test-home-page-2";
+	let pageName1 = "test-home-page-1";
+	let pageName2 = "test-home-page-2";
 	TimeMe.startTimer(pageName1, new Date(1500000000000));
 	TimeMe.startTimer(pageName2, new Date(1500000000000));
 	TimeMe.stopTimer(pageName2, new Date(1500000003000));
@@ -40,21 +40,21 @@ QUnit.test("getTimeOnCurrentPage() scenario 2", function (assert) {
 });
 
 QUnit.test("getTimeOnPage() returns undefined if timer not started.", function (assert) {
-	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
-	var expectedTime = undefined;
+	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	let expectedTime = undefined;
 	assert.equal(actualTime, expectedTime, "Should return undefined if timer not started");
 });
 
 QUnit.test("getTimeOnAllPagesInSeconds() returns empty array by default.", function (assert) {
-	var actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
-	var numberEntriesActualTimes = Object.keys(actualTimes).length;
+	let actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
+	let numberEntriesActualTimes = Object.keys(actualTimes).length;
 	assert.equal(numberEntriesActualTimes, 0, "Should return empty array.");
 });
 
 QUnit.test("startTimer() and stopTimer() keeps track of time spent.", function (assert) {
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
-	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped.");
 	assert.notOk(isNaN(actualTime), "Should be a number.");
 	assert.ok(actualTime >= 0, "Should be greater than or equal to 0.");
@@ -69,8 +69,8 @@ QUnit.test("startTimer() and stopTimer() keeps track of time spent on specific p
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
 
-	var actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
-	var expectedNumberOfEntries = 2;
+	let actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
+	let expectedNumberOfEntries = 2;
 	assert.equal(actualTimes.length, expectedNumberOfEntries, "Should have two entries, one for each page");
 
 	assert.equal(actualTimes[0].pageName, "first page", "First response should be first page");
@@ -86,12 +86,12 @@ QUnit.test("resetAllRecordedPageTimes() should clear out all times.", function (
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
 
-	var actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
+	let actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
 	assert.equal(actualTimes.length, 2, "Should have two entries.");
 
 	TimeMe.resetAllRecordedPageTimes();
-	var actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
-	var expectedNumberOfEntries = 0;
+	let actualTimes = TimeMe.getTimeOnAllPagesInSeconds();
+	let expectedNumberOfEntries = 0;
 	assert.equal(actualTimes.length, expectedNumberOfEntries, "Should have no entries since we cleared them out.");
 });
 
@@ -99,7 +99,7 @@ QUnit.test("startTimer() is ignored the second time when called twice without st
 	TimeMe.startTimer();
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
-	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime >= 0, "Should record time based on initialized point");
 });
 
@@ -132,26 +132,26 @@ QUnit.test("startTimer() and stopTimer() reset the 'active' and 'idle' states", 
 });
 
 QUnit.test("startTimer() can accept an initialized startTime", function (assert) {
-	var initTime = new Date() - 10000;
+	let initTime = new Date() - 10000;
 	TimeMe.startTimer(undefined, initTime);
 	TimeMe.stopTimer();
-	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped.");
 	assert.ok(actualTime >= 10, "Should be greater than or equal to 10.");
 });
 
 QUnit.test("startTimer(): an initialized startTime should only be associated with a single 'page'", function (assert) {
-	var pageName1 = "page-1";
-	var pageName2 = "page-2";
-	var initTime1 = new Date() - 10000;	
+	let pageName1 = "page-1";
+	let pageName2 = "page-2";
+	let initTime1 = new Date() - 10000;	
 
 	TimeMe.startTimer(pageName1, initTime1);
 	TimeMe.stopTimer(pageName1);
 	TimeMe.startTimer(pageName2);
 	TimeMe.stopTimer(pageName2);
 	TimeMe.stopTimer(pageName2);
-	var page1Time = TimeMe.getTimeOnPageInSeconds(pageName1);
-	var page2Time = TimeMe.getTimeOnPageInSeconds(pageName2);
+	let page1Time = TimeMe.getTimeOnPageInSeconds(pageName1);
+	let page2Time = TimeMe.getTimeOnPageInSeconds(pageName2);
 
 	assert.ok(page1Time !== undefined, "Should not be undefined since timer started/stopped.");
 	assert.ok(page1Time >= 10, "Should be greater than or equal to 10s since an initTime was provided");
@@ -163,7 +163,7 @@ QUnit.test("stopTimer() is ignored the second time when called twice without sto
 	TimeMe.startTimer();
 	TimeMe.stopTimer();
 	TimeMe.stopTimer();
-	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped.");
 	assert.ok(actualTime >= 0, "Should be greater than or equal to 0.");
 });
@@ -171,13 +171,13 @@ QUnit.test("stopTimer() is ignored the second time when called twice without sto
 QUnit.test("initialize() should start timer", function (assert) {
 	TimeMe.initialize();
 	TimeMe.stopTimer();
-	var actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
+	let actualTime = TimeMe.getTimeOnCurrentPageInSeconds();
 	assert.ok(actualTime !== undefined, "Should not be undefined since timer started/stopped.");
 	assert.ok(actualTime >= 0, "Should be greater than or equal to 0.");
 });
 
 QUnit.test("callWhenUserLeaves() should execute only once if indicated", function (assert) {
-	var counter = 0;
+	let counter = 0;
 	TimeMe.callWhenUserLeaves(function () {
 		counter++;
 	}, 1);
@@ -196,7 +196,7 @@ QUnit.test("callWhenUserLeaves() should execute only once if indicated", functio
 	assert.equal(counter, 1);
 });
 QUnit.test("callWhenUserLeaves() should execute repeatedly if no limit specified", function (assert) {
-	var counter = 0;
+	let counter = 0;
 	TimeMe.callWhenUserLeaves(function () {
 		counter++;
 	});
@@ -215,7 +215,7 @@ QUnit.test("callWhenUserLeaves() should execute repeatedly if no limit specified
 	assert.equal(counter, 3);
 });
 QUnit.test("callWhenUserReturns() should execute only once if indicated", function (assert) {
-	var counter = 0;
+	let counter = 0;
 	TimeMe.callWhenUserReturns(function () {
 		counter++;
 	}, 1);
@@ -234,7 +234,7 @@ QUnit.test("callWhenUserReturns() should execute only once if indicated", functi
 	assert.equal(counter, 1);
 });
 QUnit.test("callWhenUserReturns() should execute repeatedly if no limit specified", function (assert) {
-	var counter = 0;
+	let counter = 0;
 	TimeMe.callWhenUserReturns(function () {
 		counter++;
 	});
@@ -253,7 +253,7 @@ QUnit.test("callWhenUserReturns() should execute repeatedly if no limit specifie
 	assert.equal(counter, 3);
 });
 QUnit.test("stopAllTimers() should stop all timers", function (assert) {
-	var done = assert.async();
+	let done = assert.async();
 
 	TimeMe.startTimer("my-1st-timer");
 	TimeMe.startTimer("my-2nd-timer");
@@ -263,9 +263,9 @@ QUnit.test("stopAllTimers() should stop all timers", function (assert) {
 
 		TimeMe.stopAllTimers();
 
-		var originalTime1 = TimeMe.getTimeOnPageInMilliseconds("my-1st-timer");
-		var originalTime2 = TimeMe.getTimeOnPageInMilliseconds("my-2nd-timer");
-		var originalTime3 = TimeMe.getTimeOnPageInMilliseconds("my-3rd-timer");
+		let originalTime1 = TimeMe.getTimeOnPageInMilliseconds("my-1st-timer");
+		let originalTime2 = TimeMe.getTimeOnPageInMilliseconds("my-2nd-timer");
+		let originalTime3 = TimeMe.getTimeOnPageInMilliseconds("my-3rd-timer");
 
 		assert.ok(originalTime1 > 9);
 		assert.ok(originalTime2 > 9);

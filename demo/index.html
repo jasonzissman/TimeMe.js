@@ -26,13 +26,13 @@
 				TimeMe.trackTimeOnElement('area-of-interest-1');
 				TimeMe.trackTimeOnElement('area-of-interest-2');
 				setInterval(function(){
-					var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
+					let timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
 					document.getElementById('timeInSeconds').textContent = timeSpentOnPage.toFixed(2);
 
-					var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
+					let timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
 					document.getElementById('area-of-interest-time-1').textContent = timeSpentOnElement.toFixed(2);
 
-					var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-2');
+					let timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-2');
 					document.getElementById('area-of-interest-time-2').textContent = timeSpentOnElement.toFixed(2);
 				}, 25);
 			}

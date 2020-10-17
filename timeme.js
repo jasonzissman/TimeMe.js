@@ -38,7 +38,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			startStopTimes: {},
 			idleTimeoutMs: 30 * 1000,
 			currentIdleTimeMs: 0,
-			checkStateRateMs: 250,
+			checkIdleStateRateMs: 250,
 			active: false, // state if we are actively recording time
 			idle: false, // state if user on page but not interacting
 			currentPageName: "default-page-name",
@@ -270,7 +270,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				});
 			},
 
-			checkState: () => {
+			checkIdleState: () => {
 				for (var i = 0; i < TimeMe.timeElapsedCallbacks.length; i++) {
 					if (TimeMe.timeElapsedCallbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
 						TimeMe.timeElapsedCallbacks[i].callback();
@@ -281,53 +281,58 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					TimeMe.idle = true;
 					TimeMe.triggerUserHasLeftPage();
 				} else {
-					TimeMe.currentIdleTimeMs += TimeMe.checkStateRateMs;
+					TimeMe.currentIdleTimeMs += TimeMe.checkIdleStateRateMs;
 				}
 			},
 
 			visibilityChangeEventName: undefined,
 			hiddenPropName: undefined,
 
-			listenForVisibilityEvents: () => {
+			listenForVisibilityEvents: (trackWhenUserLeavesPage, trackWhenUserGoesIdle) => {
 
-				if (typeof document.hidden !== "undefined") {
-					TimeMe.hiddenPropName = "hidden";
-					TimeMe.visibilityChangeEventName = "visibilitychange";
-				} else if (typeof document.mozHidden !== "undefined") {
-					TimeMe.hiddenPropName = "mozHidden";
-					TimeMe.visibilityChangeEventName = "mozvisibilitychange";
-				} else if (typeof document.msHidden !== "undefined") {
-					TimeMe.hiddenPropName = "msHidden";
-					TimeMe.visibilityChangeEventName = "msvisibilitychange";
-				} else if (typeof document.webkitHidden !== "undefined") {
-					TimeMe.hiddenPropName = "webkitHidden";
-					TimeMe.visibilityChangeEventName = "webkitvisibilitychange";
+				if (trackWhenUserLeavesPage) {
+					if (typeof document.hidden !== "undefined") {
+						TimeMe.hiddenPropName = "hidden";
+						TimeMe.visibilityChangeEventName = "visibilitychange";
+					} else if (typeof document.mozHidden !== "undefined") {
+						TimeMe.hiddenPropName = "mozHidden";
+						TimeMe.visibilityChangeEventName = "mozvisibilitychange";
+					} else if (typeof document.msHidden !== "undefined") {
+						TimeMe.hiddenPropName = "msHidden";
+						TimeMe.visibilityChangeEventName = "msvisibilitychange";
+					} else if (typeof document.webkitHidden !== "undefined") {
+						TimeMe.hiddenPropName = "webkitHidden";
+						TimeMe.visibilityChangeEventName = "webkitvisibilitychange";
+					}
+	
+					document.addEventListener(TimeMe.visibilityChangeEventName, () => {
+						if (document[TimeMe.hiddenPropName]) {
+							TimeMe.triggerUserHasLeftPage();
+						} else {
+							TimeMe.triggerUserHasReturned();						
+						}
+					}, false);
+
+					window.addEventListener('blur', () => {
+						TimeMe.triggerUserHasLeftPage();
+					});
+	
+					window.addEventListener('focus', () => {
+						TimeMe.triggerUserHasReturned();
+					});
 				}
 
-				document.addEventListener(TimeMe.visibilityChangeEventName, () => {
-					if (document[TimeMe.hiddenPropName]) {
-						TimeMe.triggerUserHasLeftPage();
-					} else {
-						TimeMe.triggerUserHasReturned();						
-					}
-				}, false);
+				if (trackWhenUserGoesIdle) {
+					document.addEventListener("mousemove", () => { TimeMe.resetIdleCountdown(); });
+					document.addEventListener("keyup", () => { TimeMe.resetIdleCountdown(); });
+					document.addEventListener("touchstart", () => { TimeMe.resetIdleCountdown(); });
+					window.addEventListener("scroll", () => { TimeMe.resetIdleCountdown(); });
+	
+					setInterval(() => {
+						TimeMe.checkIdleState();
+					}, TimeMe.checkIdleStateRateMs);
+				}
 
-				window.addEventListener('blur', () => {
-					TimeMe.triggerUserHasLeftPage();
-				});
-
-				window.addEventListener('focus', () => {
-					TimeMe.triggerUserHasReturned();
-				});
-
-				document.addEventListener("mousemove", () => { TimeMe.resetIdleCountdown(); });
-				document.addEventListener("keyup", () => { TimeMe.resetIdleCountdown(); });
-				document.addEventListener("touchstart", () => { TimeMe.resetIdleCountdown(); });
-				window.addEventListener("scroll", () => { TimeMe.resetIdleCountdown(); });
-
-				setInterval(() => {
-					TimeMe.checkState();
-				}, TimeMe.checkStateRateMs);
 			},
 
 			websocket: undefined,
@@ -388,10 +393,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 			initialize: (options) => {
 
-				var idleTimeoutInSeconds = TimeMe.idleTimeoutMs || 30;
-				var currentPageName = TimeMe.currentPageName || "default-page-name";
-				var websocketOptions = undefined;
-				var initialStartTime = undefined;
+				let idleTimeoutInSeconds = TimeMe.idleTimeoutMs || 30;
+				let currentPageName = TimeMe.currentPageName || "default-page-name";
+				let websocketOptions = undefined;
+				let initialStartTime = undefined;
+				let trackWhenUserLeavesPage = true;
+				let trackWhenUserGoesIdle = true;
 
 				if (options) {
 					idleTimeoutInSeconds = options.idleTimeoutInSeconds || idleTimeoutInSeconds;
@@ -403,7 +410,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.setIdleDurationInSeconds(idleTimeoutInSeconds)
 					.setCurrentPageName(currentPageName)
 					.setUpWebsocket(websocketOptions)
-					.listenForVisibilityEvents();
+					.listenForVisibilityEvents(trackWhenUserLeavesPage, trackWhenUserGoesIdle);
 
 				// TODO - only do this if page currently visible.
 

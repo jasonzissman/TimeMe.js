@@ -54,7 +54,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					});
 					element.addEventListener("mousemove", () => {
 						TimeMe.startTimer(elementId);
-					});					
+					});
 					element.addEventListener("mouseleave", () => {
 						TimeMe.stopTimer(elementId);
 					});
@@ -291,48 +291,56 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			listenForVisibilityEvents: (trackWhenUserLeavesPage, trackWhenUserGoesIdle) => {
 
 				if (trackWhenUserLeavesPage) {
-					if (typeof document.hidden !== "undefined") {
-						TimeMe.hiddenPropName = "hidden";
-						TimeMe.visibilityChangeEventName = "visibilitychange";
-					} else if (typeof document.mozHidden !== "undefined") {
-						TimeMe.hiddenPropName = "mozHidden";
-						TimeMe.visibilityChangeEventName = "mozvisibilitychange";
-					} else if (typeof document.msHidden !== "undefined") {
-						TimeMe.hiddenPropName = "msHidden";
-						TimeMe.visibilityChangeEventName = "msvisibilitychange";
-					} else if (typeof document.webkitHidden !== "undefined") {
-						TimeMe.hiddenPropName = "webkitHidden";
-						TimeMe.visibilityChangeEventName = "webkitvisibilitychange";
-					}
-	
-					document.addEventListener(TimeMe.visibilityChangeEventName, () => {
-						if (document[TimeMe.hiddenPropName]) {
-							TimeMe.triggerUserHasLeftPage();
-						} else {
-							TimeMe.triggerUserHasReturned();						
-						}
-					}, false);
-
-					window.addEventListener('blur', () => {
-						TimeMe.triggerUserHasLeftPage();
-					});
-	
-					window.addEventListener('focus', () => {
-						TimeMe.triggerUserHasReturned();
-					});
+					TimeMe.listenForUserLeavesOrReturnsEvents();
 				}
 
 				if (trackWhenUserGoesIdle) {
-					document.addEventListener("mousemove", () => { TimeMe.resetIdleCountdown(); });
-					document.addEventListener("keyup", () => { TimeMe.resetIdleCountdown(); });
-					document.addEventListener("touchstart", () => { TimeMe.resetIdleCountdown(); });
-					window.addEventListener("scroll", () => { TimeMe.resetIdleCountdown(); });
-	
-					setInterval(() => {
-						TimeMe.checkIdleState();
-					}, TimeMe.checkIdleStateRateMs);
+					TimeMe.listForIdleEvents();
 				}
 
+			},
+
+			listenForUserLeavesOrReturnsEvents: () => {
+				if (typeof document.hidden !== "undefined") {
+					TimeMe.hiddenPropName = "hidden";
+					TimeMe.visibilityChangeEventName = "visibilitychange";
+				} else if (typeof document.mozHidden !== "undefined") {
+					TimeMe.hiddenPropName = "mozHidden";
+					TimeMe.visibilityChangeEventName = "mozvisibilitychange";
+				} else if (typeof document.msHidden !== "undefined") {
+					TimeMe.hiddenPropName = "msHidden";
+					TimeMe.visibilityChangeEventName = "msvisibilitychange";
+				} else if (typeof document.webkitHidden !== "undefined") {
+					TimeMe.hiddenPropName = "webkitHidden";
+					TimeMe.visibilityChangeEventName = "webkitvisibilitychange";
+				}
+
+				document.addEventListener(TimeMe.visibilityChangeEventName, () => {
+					if (document[TimeMe.hiddenPropName]) {
+						TimeMe.triggerUserHasLeftPage();
+					} else {
+						TimeMe.triggerUserHasReturned();
+					}
+				}, false);
+
+				window.addEventListener('blur', () => {
+					TimeMe.triggerUserHasLeftPage();
+				});
+
+				window.addEventListener('focus', () => {
+					TimeMe.triggerUserHasReturned();
+				});
+			},
+
+			listForIdleEvents: () => {
+				document.addEventListener("mousemove", () => { TimeMe.resetIdleCountdown(); });
+				document.addEventListener("keyup", () => { TimeMe.resetIdleCountdown(); });
+				document.addEventListener("touchstart", () => { TimeMe.resetIdleCountdown(); });
+				window.addEventListener("scroll", () => { TimeMe.resetIdleCountdown(); });
+
+				setInterval(() => {
+					TimeMe.checkIdleState();
+				}, TimeMe.checkIdleStateRateMs);
 			},
 
 			websocket: undefined,

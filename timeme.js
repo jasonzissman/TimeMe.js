@@ -98,8 +98,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					"startTime": startTime || new Date(),
 					"stopTime": undefined
 				});
-				TimeMe.active = true;
-				TimeMe.idle = false;
+				TimeMe.isUserCurrentlyActiveOnPage = true;
+				TimeMe.isUserCurrentlyIdle = false;
 			},
 
 			stopAllTimers: () => {
@@ -124,7 +124,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (arrayOfTimes[arrayOfTimes.length - 1].stopTime === undefined) {
 					arrayOfTimes[arrayOfTimes.length - 1].stopTime = stopTime || new Date();
 				}
-				TimeMe.active = false;
+				TimeMe.isUserCurrentlyActiveOnPage = false;
 			},
 
 			getTimeOnCurrentPageInSeconds: () => {
@@ -209,12 +209,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					TimeMe.resetRecordedPageTime(pageNames[i]);
 				}
 			},
-
-			resetIdleCountdown: () => {
-				if (TimeMe.idle) {
+			userActivityDetected: () => {
+				if (TimeMe.isUserCurrentlyIdle) {
 					TimeMe.triggerUserHasReturned();
 				}
-				TimeMe.idle = false;
+				TimeMe.resetIdleCountdown();
+			},
+			resetIdleCountdown: () => {
+				TimeMe.isUserCurrentlyIdle = false;
 				TimeMe.currentIdleTimeMs = 0;
 			},
 
@@ -233,7 +235,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			triggerUserHasReturned: () => {
-				if (!TimeMe.active) {
+				if (!TimeMe.isUserCurrentlyActiveOnPage) {
+					TimeMe.resetIdleCountdown();
 					for (let i = 0; i < TimeMe.userReturnCallbacks.length; i++) {
 						let userReturnedCallback = TimeMe.userReturnCallbacks[i];
 						let numberTimes = userReturnedCallback.numberOfTimesToInvoke;
@@ -247,7 +250,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			triggerUserHasLeftPage: () => {
-				if (TimeMe.active) {
+				if (TimeMe.isUserCurrentlyActiveOnPage) {
+					TimeMe.resetIdleCountdown();
 					for (let i = 0; i < TimeMe.userLeftCallbacks.length; i++) {
 						let userHasLeftCallback = TimeMe.userLeftCallbacks[i];
 						let numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
@@ -275,8 +279,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 						TimeMe.timeElapsedCallbacks[i].pending = false;
 					}
 				}
-				if (TimeMe.idle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
-					TimeMe.idle = true;
+				if (TimeMe.isUserCurrentlyIdle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
+					TimeMe.isUserCurrentlyIdle = true;
 					TimeMe.triggerUserHasLeftPage();
 				} else {
 					TimeMe.currentIdleTimeMs += TimeMe.checkIdleStateRateMs;
@@ -331,13 +335,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			listForIdleEvents: () => {
-				document.addEventListener("mousemove", () => { TimeMe.resetIdleCountdown(); });
-				document.addEventListener("keyup", () => { TimeMe.resetIdleCountdown(); });
-				document.addEventListener("touchstart", () => { TimeMe.resetIdleCountdown(); });
-				window.addEventListener("scroll", () => { TimeMe.resetIdleCountdown(); });
+				document.addEventListener("mousemove", () => { TimeMe.userActivityDetected(); });
+				document.addEventListener("keyup", () => { TimeMe.userActivityDetected(); });
+				document.addEventListener("touchstart", () => { TimeMe.userActivityDetected(); });
+				window.addEventListener("scroll", () => { TimeMe.userActivityDetected(); });
 
 				setInterval(() => {
-					TimeMe.checkIdleState();
+					if (TimeMe.isUserCurrentlyIdle !== true) {
+						TimeMe.checkIdleState();
+					}
 				}, TimeMe.checkIdleStateRateMs);
 			},
 

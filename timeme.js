@@ -248,7 +248,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 			// TODO - we are muddying the waters in between
 			// 'user left page' and 'user gone idle'. Really should be
-			// two separet concepts entirely. Need to break this into smaller  functions
+			// two separate concepts entirely. Need to break this into smaller  functions
 			// for either scenario.
 			triggerUserHasLeftPageOrGoneIdle: () => {
 				if (TimeMe.isUserCurrentlyOnPage) {

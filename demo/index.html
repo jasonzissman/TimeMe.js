@@ -30,12 +30,8 @@
 				let timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
 				document.getElementById('timeInSeconds').textContent = timeSpentOnPage.toFixed(2);
 
-				if (TimeMe.isUserCurrentlyOnPage) {
-					if (TimeMe.isUserCurrentlyIdle === false) {
-						document.getElementById('activityStatus').textContent = "You are actively using this page."
-					} else {
-						document.getElementById('activityStatus').textContent = "You have gone idle."
-					}
+				if (TimeMe.isUserCurrentlyOnPage && TimeMe.isUserCurrentlyIdle === false) {
+					document.getElementById('activityStatus').textContent = "You are actively using this page."
 				} else {
 					document.getElementById('activityStatus').textContent = "You have left the page."
 				}

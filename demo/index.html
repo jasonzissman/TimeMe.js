@@ -7,10 +7,10 @@
 			TimeMe.initialize({
 				currentPageName: "my-home-page", // current page
 				idleTimeoutInSeconds: 5, // stop recording time due to inactivity
-				websocketOptions: { // optional
-					websocketHost: "ws://your_host:your_port",
-					appId: "insert-your-made-up-app-id"
-				}
+				//websocketOptions: { // optional
+				//	websocketHost: "ws://your_host:your_port",
+				//	appId: "insert-your-made-up-app-id"
+				//}
 			});
 
 			TimeMe.callAfterTimeElapsedInSeconds(4, function(){
@@ -32,8 +32,8 @@
 					let timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
 					document.getElementById('area-of-interest-time-1').textContent = timeSpentOnElement.toFixed(2);
 
-					let timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-2');
-					document.getElementById('area-of-interest-time-2').textContent = timeSpentOnElement.toFixed(2);
+					let timeSpentOnElement2 = TimeMe.getTimeOnElementInSeconds('area-of-interest-2');
+					document.getElementById('area-of-interest-time-2').textContent = timeSpentOnElement2.toFixed(2);
 				}, 25);
 			}
 		</script>

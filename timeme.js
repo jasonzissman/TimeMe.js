@@ -250,8 +250,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			triggerUserHasLeftPage: () => {
-				if (TimeMe.isUserCurrentlyActiveOnPage) {
-					TimeMe.resetIdleCountdown();
+				if (TimeMe.isUserCurrentlyActiveOnPage) {					
 					for (let i = 0; i < TimeMe.userLeftCallbacks.length; i++) {
 						let userHasLeftCallback = TimeMe.userLeftCallbacks[i];
 						let numberTimes = userHasLeftCallback.numberOfTimesToInvoke;

@@ -103,34 +103,6 @@ QUnit.test("startTimer() is ignored the second time when called twice without st
 	assert.ok(actualTime >= 0, "Should record time based on initialized point");
 });
 
-QUnit.test("startTimer() and stopTimer() reset the 'active' and 'idle' states", (assert) => {
-
-	// Default state is not idle and not active
-	assert.equal(TimeMe.active, false);
-	assert.equal(TimeMe.idle, false);
-
-	// When timer starts, should be active but not idle
-	TimeMe.startTimer();	
-	assert.equal(TimeMe.active, true);
-	assert.equal(TimeMe.idle, false);
-
-	// When timer stops, should not be active and not be idle
-	TimeMe.stopTimer();
-	assert.equal(TimeMe.active, false);
-	assert.equal(TimeMe.idle, false);
-
-	// When user goes idle, startTimer() should reset active back to true and idle back to false 
-	TimeMe.idle = true; 
-	TimeMe.startTimer();	
-	assert.equal(TimeMe.active, true);
-	assert.equal(TimeMe.idle, false);
-
-	// When timer stops, should not be active and not be idle
-	TimeMe.stopTimer();
-	assert.equal(TimeMe.active, false);
-	assert.equal(TimeMe.idle, false);
-});
-
 QUnit.test("startTimer() can accept an initialized startTime", (assert) => {
 	let initTime = new Date() - 10000;
 	TimeMe.startTimer(undefined, initTime);
@@ -183,16 +155,16 @@ QUnit.test("callWhenUserLeaves() should execute only once if indicated", (assert
 	}, 1);
 	assert.equal(counter, 0);
 
-	TimeMe.active = true;
-	TimeMe.triggerUserHasLeftPage();
+	TimeMe.isUserCurrentlyOnPage = true;
+	TimeMe.triggerUserHasLeftPageOrGoneIdle();
 	assert.equal(counter, 1);
 
-	TimeMe.active = true;
-	TimeMe.triggerUserHasLeftPage();
+	TimeMe.isUserCurrentlyOnPage = true;
+	TimeMe.triggerUserHasLeftPageOrGoneIdle();
 	assert.equal(counter, 1);
 
-	TimeMe.active = true;
-	TimeMe.triggerUserHasLeftPage();
+	TimeMe.isUserCurrentlyOnPage = true;
+	TimeMe.triggerUserHasLeftPageOrGoneIdle();
 	assert.equal(counter, 1);
 });
 QUnit.test("callWhenUserLeaves() should execute repeatedly if no limit specified", (assert) => {
@@ -202,16 +174,16 @@ QUnit.test("callWhenUserLeaves() should execute repeatedly if no limit specified
 	});
 	assert.equal(counter, 0);
 
-	TimeMe.active = true;
-	TimeMe.triggerUserHasLeftPage();
+	TimeMe.isUserCurrentlyOnPage = true;
+	TimeMe.triggerUserHasLeftPageOrGoneIdle();
 	assert.equal(counter, 1);
 
-	TimeMe.active = true;
-	TimeMe.triggerUserHasLeftPage();
+	TimeMe.isUserCurrentlyOnPage = true;
+	TimeMe.triggerUserHasLeftPageOrGoneIdle();
 	assert.equal(counter, 2);
 
-	TimeMe.active = true;
-	TimeMe.triggerUserHasLeftPage();
+	TimeMe.isUserCurrentlyOnPage = true;
+	TimeMe.triggerUserHasLeftPageOrGoneIdle();
 	assert.equal(counter, 3);
 });
 QUnit.test("callWhenUserReturns() should execute only once if indicated", (assert) => {
@@ -221,15 +193,15 @@ QUnit.test("callWhenUserReturns() should execute only once if indicated", (asser
 	}, 1);
 	assert.equal(counter, 0);
 
-	TimeMe.active = false;
+	TimeMe.isUserCurrentlyOnPage = false;
 	TimeMe.triggerUserHasReturned();
 	assert.equal(counter, 1);
 
-	TimeMe.active = false;
+	TimeMe.isUserCurrentlyOnPage = false;
 	TimeMe.triggerUserHasReturned();
 	assert.equal(counter, 1);
 
-	TimeMe.active = false;
+	TimeMe.isUserCurrentlyOnPage = false;
 	TimeMe.triggerUserHasReturned();
 	assert.equal(counter, 1);
 });
@@ -240,15 +212,15 @@ QUnit.test("callWhenUserReturns() should execute repeatedly if no limit specifie
 	});
 	assert.equal(counter, 0);
 
-	TimeMe.active = false;
+	TimeMe.isUserCurrentlyOnPage = false;
 	TimeMe.triggerUserHasReturned();
 	assert.equal(counter, 1);
 
-	TimeMe.active = false;
+	TimeMe.isUserCurrentlyOnPage = false;
 	TimeMe.triggerUserHasReturned();
 	assert.equal(counter, 2);
 
-	TimeMe.active = false;
+	TimeMe.isUserCurrentlyOnPage = false;
 	TimeMe.triggerUserHasReturned();
 	assert.equal(counter, 3);
 });

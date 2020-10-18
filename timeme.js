@@ -39,8 +39,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			idleTimeoutMs: 30 * 1000,
 			currentIdleTimeMs: 0,
 			checkIdleStateRateMs: 250,
-			active: false, // state if we are actively recording time
-			idle: false, // state if user on page but not interacting
+			isUserCurrentlyOnPage: true, 
+			isUserCurrentlyIdle: false, 
 			currentPageName: "default-page-name",
 			timeElapsedCallbacks: [],
 			userLeftCallbacks: [],
@@ -97,9 +97,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.startStopTimes[pageName].push({
 					"startTime": startTime || new Date(),
 					"stopTime": undefined
-				});
-				TimeMe.isUserCurrentlyActiveOnPage = true;
-				TimeMe.isUserCurrentlyIdle = false;
+				});				
 			},
 
 			stopAllTimers: () => {
@@ -124,7 +122,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				if (arrayOfTimes[arrayOfTimes.length - 1].stopTime === undefined) {
 					arrayOfTimes[arrayOfTimes.length - 1].stopTime = stopTime || new Date();
 				}
-				TimeMe.isUserCurrentlyActiveOnPage = false;
 			},
 
 			getTimeOnCurrentPageInSeconds: () => {
@@ -235,7 +232,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			triggerUserHasReturned: () => {
-				if (!TimeMe.isUserCurrentlyActiveOnPage) {
+				if (!TimeMe.isUserCurrentlyOnPage) {
+					TimeMe.isUserCurrentlyOnPage = true;
 					TimeMe.resetIdleCountdown();
 					for (let i = 0; i < TimeMe.userReturnCallbacks.length; i++) {
 						let userReturnedCallback = TimeMe.userReturnCallbacks[i];
@@ -248,9 +246,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 				TimeMe.startTimer();
 			},
-
-			triggerUserHasLeftPage: () => {
-				if (TimeMe.isUserCurrentlyActiveOnPage) {					
+			// TODO - we are muddying the waters in between
+			// 'user left page' and 'user gone idle'. Really should be
+			// two separet concepts entirely. Need to break this into smaller  functions
+			// for either scenario.
+			triggerUserHasLeftPageOrGoneIdle: () => {
+				if (TimeMe.isUserCurrentlyOnPage) {
+					TimeMe.isUserCurrentlyOnPage = false;					
 					for (let i = 0; i < TimeMe.userLeftCallbacks.length; i++) {
 						let userHasLeftCallback = TimeMe.userLeftCallbacks[i];
 						let numberTimes = userHasLeftCallback.numberOfTimesToInvoke;
@@ -280,7 +282,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 				if (TimeMe.isUserCurrentlyIdle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
 					TimeMe.isUserCurrentlyIdle = true;
-					TimeMe.triggerUserHasLeftPage();
+					TimeMe.triggerUserHasLeftPageOrGoneIdle();
 				} else {
 					TimeMe.currentIdleTimeMs += TimeMe.checkIdleStateRateMs;
 				}
@@ -318,14 +320,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 				document.addEventListener(TimeMe.visibilityChangeEventName, () => {
 					if (document[TimeMe.hiddenPropName]) {
-						TimeMe.triggerUserHasLeftPage();
+						TimeMe.triggerUserHasLeftPageOrGoneIdle();
 					} else {
 						TimeMe.triggerUserHasReturned();
 					}
 				}, false);
 
 				window.addEventListener('blur', () => {
-					TimeMe.triggerUserHasLeftPage();
+					TimeMe.triggerUserHasLeftPageOrGoneIdle();
 				});
 
 				window.addEventListener('focus', () => {

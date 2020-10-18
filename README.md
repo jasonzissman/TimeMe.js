@@ -184,10 +184,9 @@ Clears all recorded times for all pages.
 # Build Tools
 To minify the code, run the following:
 
-    # install uglify if not already available
-    npm install uglify-js -g
+    # install babel-minify if not already available
+    npm install babel-minify -g
 	
-	# Minify the code
-    uglifyjs timeme.js --mangle --compress --support-ie8 --output timeme.min.js
-
+	# Minify the code    
+    minify timeme.js --out-file timeme.min.js
 	

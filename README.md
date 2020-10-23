@@ -5,10 +5,9 @@ TimeMe.js is a JavaScript library that accurately tracks how long users interact
 You can see a <a href="https://jasonzissman.github.io/time-me-demo/" target="_blank">live demo of TimeMe.js here</a>.
 
 # How do I use TimeMe.js?
-First, obtain a copy of timeme.js. A minified version is bundled in this repository as `timeme.min.js`. Alternatively, you can get a copy by installing TimeMe.js via npm or Bower:
+First, obtain a copy of timeme.js. A minified version is bundled in this repository as `timeme.min.js`. Alternatively, you can get a copy by installing TimeMe.js via npm:
 
     npm install timeme.js --save
-    bower install timeme.js
 
 Once downloaded, simply include the following lines of code in your page:
 

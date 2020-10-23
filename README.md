@@ -16,14 +16,14 @@ Once downloaded, simply include the following lines of code in your page:
     <script type="text/javascript">
 	    // Initialize library and start tracking time
 	    TimeMe.initialize({
-    	currentPageName: "my-home-page", // current page
-    	idleTimeoutInSeconds: 30 // seconds
+    	    currentPageName: "my-home-page", // current page
+    	    idleTimeoutInSeconds: 30 // seconds
 	    });
 
 	    // ... Some time later ...
 
 	    // Retrieve time spent on current page
-	    var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
+	    let timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
     </script>
 
 Notice that the code sample sets the idle duration to 30 seconds, which means 30 seconds of user inactivity (no mouse or keyboard usage on the page) will stop the timer.  Also, we define a page name (`my-home-page`) to associate with the current timer.
@@ -33,7 +33,7 @@ Notice that the code sample sets the idle duration to 30 seconds, which means 30
     TimeMe.startTimer("my-activity");
     // ... some time later
     TimeMe.stopTimer("my-activity");
-    var timeOnActivity = TimeMe.getTimeOnPageInSeconds("my-activity")
+    let timeOnActivity = TimeMe.getTimeOnPageInSeconds("my-activity")
 
 TimeMe gives you a hook to execute a function after a user has been interacting with your page for a set period of time.  Simply call `TimeMe.callAfterTimeElapsedInSeconds()`:
 
@@ -58,7 +58,7 @@ TimeMe also lets you track how long users are interacting with specific elements
     // Start tracking activity on element with id 'area-of-interest-1'
     TimeMe.trackTimeOnElement('area-of-interest-1');
     // some time later...
-    var timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
+    let timeSpentOnElement = TimeMe.getTimeOnElementInSeconds('area-of-interest-1');
 
 
 # What do I do with the time I've tracked?
@@ -84,7 +84,7 @@ Alternatively you can issue an HTTP request to your back end server to report ti
     	xmlhttp=new XMLHttpRequest();
     	xmlhttp.open("POST","ENTER_URL_HERE", true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    	var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
+    	let timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
     	xmlhttp.send(timeSpentOnPage);
     };
 
@@ -100,7 +100,7 @@ If using a Single Page Application (SPA) design, TimeMe.js can have its timer st
 	
 All page times are tracked in TimeMe.js, so you can review total aggregate time spent on each page for a particular user's session:
 
-    var timeSpentReport = TimeMe.getTimeOnAllPagesInSeconds();
+    let timeSpentReport = TimeMe.getTimeOnAllPagesInSeconds();
 	
 This call will return an array of objects of page names and the corresponding aggregate
 time spent on that page.
@@ -109,14 +109,17 @@ time spent on that page.
 All major desktop and mobile browsers.
 
 # How do I run the unit tests?
-You'll need to install QUnit, which should be packaged with TimeMe.js if you performed a Bower install of TimeMe.js.  Once you have installed QUnit, you can simply open the test files to execute the tests.
+You'll need to install QUnit, which should be packaged with TimeMe.js if you performed a Bower install of TimeMe.js.  Once you have installed QUnit, you can simply open the test HTML files in a browser to execute the tests.
 
 # API
 
 ### `TimeMe.initialize(options);`
-    // options.currentPageName // - Name of the page (home, about, etc.)
-    // options.idleTimeoutInSeconds // - how much inactive time before user considered idle
-    // options.websocketOptions: { // Turn on websocket reporting
+    // options.currentPageName // - Optional. Name of the page (home, about, etc.).
+    // options.idleTimeoutInSeconds // - Optional. How long before user is considered idle. Default is 30s.
+    // options.initialStartTime // - Optional. Indicates start time for timer manually. Must be of type Date(). Default is *now*.
+	// options.trackWhenUserLeavesPage // Optional. Must be type boolean. Default is true.
+	// options.trackWhenUserGoesIdle // Optional. Must be type boolean. Default is true.
+    // options.websocketOptions: { // Optional. Turn on websocket reporting.
     // 	 websocketHost: "ws://your_host:your_port",
     // 	 appId: "insert-your-made-up-app-id"
     // }
@@ -181,10 +184,9 @@ Clears all recorded times for all pages.
 # Build Tools
 To minify the code, run the following:
 
-    # install uglify if not already available
-    npm install uglify-js -g
+    # install babel-minify if not already available
+    npm install babel-minify -g
 	
-	# Minify the code
-    uglifyjs timeme.js --mangle --compress --support-ie8 --output timeme.min.js
-
+	# Minify the code    
+    minify timeme.js --out-file timeme.min.js
 	

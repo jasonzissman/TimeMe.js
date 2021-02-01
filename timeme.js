@@ -274,15 +274,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.timeElapsedCallbacks.push({
 					timeInSeconds: timeInSeconds,
 					callback: callback,
-					pending: true
 				});
 			},
 
 			checkIdleState: () => {
 				for (let i = 0; i < TimeMe.timeElapsedCallbacks.length; i++) {
-					if (TimeMe.timeElapsedCallbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
+					if (TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
 						TimeMe.timeElapsedCallbacks[i].callback();
-						TimeMe.timeElapsedCallbacks[i].pending = false;
 					}
 				}
 				if (TimeMe.isUserCurrentlyIdle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {

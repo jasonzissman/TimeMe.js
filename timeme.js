@@ -181,6 +181,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			},
 
 			setIdleDurationInSeconds: (duration) => {
+				// Checking for false timeout duration
+				if (typeof duration === "boolean" && duration === false) {
+					TimeMe.idleTimeoutMs = false;
+				}
+
 				let durationFloat = parseFloat(duration);
 				if (isNaN(durationFloat) === false) {
 					TimeMe.idleTimeoutMs = duration * 1000;
@@ -269,15 +274,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				TimeMe.timeElapsedCallbacks.push({
 					timeInSeconds: timeInSeconds,
 					callback: callback,
-					pending: true
 				});
 			},
 
 			checkIdleState: () => {
 				for (let i = 0; i < TimeMe.timeElapsedCallbacks.length; i++) {
-					if (TimeMe.timeElapsedCallbacks[i].pending && TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
+					if (TimeMe.getTimeOnCurrentPageInSeconds() > TimeMe.timeElapsedCallbacks[i].timeInSeconds) {
 						TimeMe.timeElapsedCallbacks[i].callback();
-						TimeMe.timeElapsedCallbacks[i].pending = false;
 					}
 				}
 				if (TimeMe.isUserCurrentlyIdle === false && TimeMe.currentIdleTimeMs > TimeMe.idleTimeoutMs) {
@@ -342,7 +345,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				window.addEventListener("scroll", () => { TimeMe.userActivityDetected(); });
 
 				setInterval(() => {
-					if (TimeMe.isUserCurrentlyIdle !== true) {
+					if (TimeMe.isUserCurrentlyIdle !== true && TimeMe.idleTimeoutMs !== false) {
 						TimeMe.checkIdleState();
 					}
 				}, TimeMe.checkIdleStateRateMs);

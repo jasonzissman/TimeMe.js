@@ -207,7 +207,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				}
 			},
 			userActivityDetected: () => {
-				if (TimeMe.isUserCurrentlyIdle) {
+				if (TimeMe.isUserCurrentlyIdle || !TimeMe.isUserCurrentlyOnPage) {
 					TimeMe.triggerUserHasReturned();
 				}
 				TimeMe.resetIdleCountdown();
